@@ -8,6 +8,7 @@
 
 'use strict'
 
+require "cylon"
 require "./beaglebone"
 GPIO = require "cylon-gpio"
 

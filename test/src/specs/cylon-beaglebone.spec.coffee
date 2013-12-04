@@ -1,6 +1,12 @@
 'use strict';
 
-cylonBeaglebone = source("cylon-beaglebone")
+# Needed so that tests don't implode
+namespace = require 'node-namespace'
+namespace 'Cylon', ->
+  class @Basestar
+    constructor: ->
+
+beaglebone = source("cylon-beaglebone")
 
 describe "basic tests", ->
   it "standard async test", (done) ->
@@ -29,8 +35,8 @@ describe "basic tests", ->
     # hard equal
     data[0].should.be.equal obj
 
-  # Now on to a `real` test
-  it "cylon-beaglebone should be awesome", ->
-    cylonBeaglebone.should.have.keys 'awesome'
-    cylonBeaglebone.awesome.should.be.a 'function'
-    cylonBeaglebone.awesome().should.be.equal 'awesome'
+  it "should be able to register", ->
+    beaglebone.register.should.be.a 'function'
+
+  it "should be able to create adaptor", ->
+    beaglebone.adaptor.should.be.a 'function'

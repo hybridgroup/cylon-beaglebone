@@ -1,8 +1,19 @@
 (function() {
   'use strict';
-  var cylonBeaglebone;
+  var beaglebone, namespace;
 
-  cylonBeaglebone = source("cylon-beaglebone");
+  namespace = require('node-namespace');
+
+  namespace('Cylon', function() {
+    return this.Basestar = (function() {
+      function Basestar() {}
+
+      return Basestar;
+
+    })();
+  });
+
+  beaglebone = source("cylon-beaglebone");
 
   describe("basic tests", function() {
     it("standard async test", function(done) {
@@ -34,10 +45,11 @@
       data[0].should.be.eql(obj);
       return data[0].should.be.equal(obj);
     });
-    return it("cylon-beaglebone should be awesome", function() {
-      cylonBeaglebone.should.have.keys('awesome');
-      cylonBeaglebone.awesome.should.be.a('function');
-      return cylonBeaglebone.awesome().should.be.equal('awesome');
+    it("should be able to register", function() {
+      return beaglebone.register.should.be.a('function');
+    });
+    return it("should be able to create adaptor", function() {
+      return beaglebone.adaptor.should.be.a('function');
     });
   });
 

@@ -12,6 +12,8 @@
   var GPIO,
     __slice = [].slice;
 
+  require("cylon");
+
   require("./beaglebone");
 
   GPIO = require("cylon-gpio");
