@@ -1,8 +1,8 @@
-# Cylon.js For Firmata
+# Cylon.js For BeagleBone
 
 Cylon.js (http://cylonjs.com) is a JavaScript framework for robotics and physical computing using Node.js
 
-This module provides an adaptor for the Beaglebone Black single-board computer (http://beagleboard.org/Products/BeagleBone+Black/)
+This module provides an adaptor for the BeagleBone Black single-board computer (http://beagleboard.org/Products/BeagleBone+Black/)
 
 Want to use Ruby on robots? Check out our sister project Artoo (http://artoo.io)
 
