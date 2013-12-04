@@ -159,29 +159,14 @@
       };
 
       Beaglebone.prototype.pwmWrite = function(pinNum, value) {
-        var pin;
-        pin = this._pwmPin(pinNum);
-        pin.pwmWrite(value);
         return value;
       };
 
       Beaglebone.prototype.servoWrite = function(pinNum, angle) {
-        var pin;
-        pin = this._pwmPin(pinNum);
-        pin.servoWrite(angle);
         return angle;
       };
 
-      Beaglebone.prototype._pwmPin = function(pinNum) {
-        var gpioPinNum;
-        gpioPinNum = this._translatePin(pinNum);
-        if (this.pwmPins[gpioPinNum] == null) {
-          this.pwmPins[gpioPinNum] = new Cylon.IO.PwmPin({
-            pin: gpioPinNum
-          });
-        }
-        return this.pwmPins[gpioPinNum];
-      };
+      Beaglebone.prototype._pwmPin = function(pinNum) {};
 
       Beaglebone.prototype._digitalPin = function(pinNum, mode) {
         var gpioPinNum;
