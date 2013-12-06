@@ -120,10 +120,11 @@
           f = files[_i];
           file = f.match(nameRegex);
           if (file != null) {
+            file = file[0];
             break;
           }
         }
-        return file[0];
+        return file;
       };
 
       PwmPin.prototype._runPath = function() {

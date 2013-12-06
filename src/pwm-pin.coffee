@@ -98,9 +98,11 @@ namespace 'Cylon.IO', ->
       file = null
       for f in files
         file = f.match(nameRegex)
-        break if file?
+        if file?
+          file = file[0]
+          break
 
-      file[0]
+      file
 
     _runPath: () ->
       "#{ @_pwmDir() }/run"
