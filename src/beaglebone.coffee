@@ -8,6 +8,7 @@
 
 'use strict'
 
+require "./pwm-pin"
 namespace = require 'node-namespace'
 
 namespace "Cylon.Adaptor", ->
