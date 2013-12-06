@@ -114,7 +114,7 @@
 
       PwmPin.prototype._findFile = function(dirName, nameRegex) {
         var f, file, files, _i, _len;
-        files = FS.readSync(dirName);
+        files = FS.readdirSync(dirName);
         file = null;
         for (_i = 0, _len = files.length; _i < _len; _i++) {
           f = files[_i];

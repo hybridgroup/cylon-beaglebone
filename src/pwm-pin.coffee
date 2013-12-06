@@ -94,7 +94,7 @@ namespace 'Cylon.IO', ->
       @pwmDir
 
     _findFile: (dirName, nameRegex) ->
-      files = FS.readSync(dirName)
+      files = FS.readdirSync(dirName)
       file = null
       for f in files
         file = f.match(nameRegex)
