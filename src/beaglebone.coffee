@@ -90,7 +90,7 @@ namespace "Cylon.Adaptor", ->
       @myself
 
     commands: ->
-      ['pins', 'digitalRead', 'digitalWrite']#, 'pwmWrite', 'servoWrite', 'firmwareName']
+      ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName']
       #'sendI2CConfig', 'sendI2CWriteRequest', 'sendI2CReadRequest']
 
     connect: (callback) ->
@@ -135,21 +135,23 @@ namespace "Cylon.Adaptor", ->
       value
 
     pwmWrite: (pinNum, value) ->
-      #pin = @_pwmPin(pinNum)
-      #pin.pwmWrite(value)
+      pin = @_pwmPin(pinNum)
+      pin.pwmWrite(value)
 
       value
 
     servoWrite: (pinNum, angle) ->
-      #pin = @_pwmPin(pinNum)
-      #pin.servoWrite(angle)
+      pin = @_pwmPin(pinNum)
+      pin.servoWrite(angle)
 
       angle
 
     _pwmPin: (pinNum) ->
-      #gpioPinNum = @_translatePin(pinNum)
-      #@pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum) unless @pwmPins[gpioPinNum]?
-      #@pwmPins[gpioPinNum]
+      gpioPinNum = @_translatePin(pinNum)
+      unless @pwmPins[gpioPinNum]?
+        size = Object.keys(@pwmPins).length
+        @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size > 0))
+      @pwmPins[gpioPinNum]
 
     _digitalPin: (pinNum, mode) ->
       gpioPinNum = @_translatePin(pinNum)

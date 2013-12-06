@@ -100,7 +100,7 @@
       }
 
       Beaglebone.prototype.commands = function() {
-        return ['pins', 'digitalRead', 'digitalWrite'];
+        return ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName'];
       };
 
       Beaglebone.prototype.connect = function(callback) {
@@ -159,14 +159,31 @@
       };
 
       Beaglebone.prototype.pwmWrite = function(pinNum, value) {
+        var pin;
+        pin = this._pwmPin(pinNum);
+        pin.pwmWrite(value);
         return value;
       };
 
       Beaglebone.prototype.servoWrite = function(pinNum, angle) {
+        var pin;
+        pin = this._pwmPin(pinNum);
+        pin.servoWrite(angle);
         return angle;
       };
 
-      Beaglebone.prototype._pwmPin = function(pinNum) {};
+      Beaglebone.prototype._pwmPin = function(pinNum) {
+        var gpioPinNum, size;
+        gpioPinNum = this._translatePin(pinNum);
+        if (this.pwmPins[gpioPinNum] == null) {
+          size = Object.keys(this.pwmPins).length;
+          this.pwmPins[gpioPinNum] = new Cylon.IO.PwmPin({
+            pin: gpioPinNum,
+            loadPwmModule: size > 0
+          });
+        }
+        return this.pwmPins[gpioPinNum];
+      };
 
       Beaglebone.prototype._digitalPin = function(pinNum, mode) {
         var gpioPinNum;
