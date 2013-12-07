@@ -82,7 +82,7 @@ namespace 'Cylon.IO', ->
       @capemagrDir
 
     _slotsPath: () ->
-      "#{ @_capemgrPath() }/slots"
+      "#{ @_capemgrDir() }/slots"
 
     _ocpDir: () ->
       unless @ocpDir

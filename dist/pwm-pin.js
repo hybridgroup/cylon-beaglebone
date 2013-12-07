@@ -95,7 +95,7 @@
       };
 
       PwmPin.prototype._slotsPath = function() {
-        return "" + (this._capemgrPath()) + "/slots";
+        return "" + (this._capemgrDir()) + "/slots";
       };
 
       PwmPin.prototype._ocpDir = function() {
