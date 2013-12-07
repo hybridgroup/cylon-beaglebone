@@ -40,7 +40,7 @@
         var am33xx,
           _this = this;
         if (this.loadPwmModule) {
-          am33xx = this._findFile(this._capemgrDir(), /pwm_test_.+/);
+          am33xx = this._findFile(this._capemgrDir(), /^pwm_test_.+/);
           if (am33xx == null) {
             FS.appendFileSync(this._slotsPath(), "am33xx_pwm\n");
           }
@@ -86,7 +86,7 @@
       PwmPin.prototype._capemgrDir = function() {
         var capemgr;
         if (this.capemgrDir == null) {
-          capemgr = this._findFile(CAPEMGR_DIR, /bone_capemgr\.\d+/);
+          capemgr = this._findFile(CAPEMGR_DIR, /^bone_capemgr\.\d+$/);
           if (capemgr != null) {
             this.capemgrDir = "" + CAPEMGR_DIR + "/" + capemgr;
           }
@@ -101,7 +101,7 @@
       PwmPin.prototype._ocpDir = function() {
         var ocp;
         if (!this.ocpDir) {
-          ocp = this._findFile(CAPEMGR_DIR, /ocp\.\d+/);
+          ocp = this._findFile(CAPEMGR_DIR, /^ocp\.\d+$/);
           if (ocp != null) {
             this.ocpDir = "" + CAPEMGR_DIR + "/" + ocp;
           }
@@ -110,9 +110,10 @@
       };
 
       PwmPin.prototype._pwmDir = function() {
-        var pwm;
+        var pwm, regex;
         if (!this.pwmDir) {
-          pwm = this._findFile(this._ocpDir(), /pwm_test_#{ @pinNum }\.\d/);
+          regex = new RegExp("^pwm_test_" + this.pinNum + "\\.\\d+$");
+          pwm = this._findFile(this._ocpDir(), regex);
           if (pwm != null) {
             this.pwmDir = "" + (this._ocpDir()) + "/" + pwm;
           }

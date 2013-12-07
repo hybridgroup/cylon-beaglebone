@@ -30,7 +30,7 @@ namespace 'Cylon.IO', ->
 
     connect: () ->
       if @loadPwmModule
-        am33xx = @_findFile(@_capemgrDir(), /pwm_test_.+/)
+        am33xx = @_findFile(@_capemgrDir(), /^pwm_test_.+/)
         unless am33xx?
           FS.appendFileSync(@_slotsPath(), "am33xx_pwm\n")
 
@@ -76,7 +76,7 @@ namespace 'Cylon.IO', ->
 
     _capemgrDir: () ->
       unless @capemgrDir?
-        capemgr = @_findFile(CAPEMGR_DIR, /bone_capemgr\.\d+/)
+        capemgr = @_findFile(CAPEMGR_DIR, /^bone_capemgr\.\d+$/)
         @capemgrDir = "#{ CAPEMGR_DIR }/#{ capemgr }" if capemgr?
 
       @capemagrDir
@@ -86,14 +86,15 @@ namespace 'Cylon.IO', ->
 
     _ocpDir: () ->
       unless @ocpDir
-        ocp = @_findFile(CAPEMGR_DIR, /ocp\.\d+/)
+        ocp = @_findFile(CAPEMGR_DIR, /^ocp\.\d+$/)
         @ocpDir = "#{ CAPEMGR_DIR }/#{ ocp }" if ocp?
 
       @ocpDir
 
     _pwmDir: () ->
       unless @pwmDir
-        pwm = @_findFile(@_ocpDir(), /pwm_test_#{ @pinNum }\.\d/)
+        regex = new RegExp("^pwm_test_#{ @pinNum }\\.\\d+$")
+        pwm = @_findFile(@_ocpDir(), regex)
         @pwmDir = "#{ @_ocpDir() }/#{ pwm }" if pwm?
 
       @pwmDir

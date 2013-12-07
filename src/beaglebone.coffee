@@ -78,7 +78,19 @@ namespace "Cylon.Adaptor", ->
       "P9_28": 113,
       "P9_29": 111,
       "P9_30": 112,
-      "P9_31": 110,
+      "P9_31": 110
+    }
+
+    PWM_PINS: {
+      "P9_14": 'P9_14',
+      "P9_21": 'P9_21',
+      "P9_22": 'P9_22',
+      "P9_29": 'P9_29',
+      "P9_42": 'P9_42',
+      "P8_13": 'P8_13',
+      "P8_34": 'P8_34',
+      "P8_45": 'P8_45',
+      "P8_46": 'P8_46'
     }
 
     constructor: (opts) ->
@@ -137,7 +149,7 @@ namespace "Cylon.Adaptor", ->
 
     pwmWrite: (pinNum, value) ->
 
-      pin = @pwmPins[@_translatePin(pinNum)]
+      pin = @pwmPins[@_translatePwmPin(pinNum)]
 
       if pin?
         pin.pwmWrite(value)
@@ -168,6 +180,9 @@ namespace "Cylon.Adaptor", ->
 
     _translatePin: (pinNum) ->
       PINS[pinNum]
+
+    _translatePwmPin: (pinNum) ->
+      PWM_PINS[pinNum]
 
     _disconnectPins: ->
       for key, pin of @pins

@@ -91,6 +91,18 @@
         "P9_31": 110
       };
 
+      Beaglebone.prototype.PWM_PINS = {
+        "P9_14": 'P9_14',
+        "P9_21": 'P9_21',
+        "P9_22": 'P9_22',
+        "P9_29": 'P9_29',
+        "P9_42": 'P9_42',
+        "P8_13": 'P8_13',
+        "P8_34": 'P8_34',
+        "P8_45": 'P8_45',
+        "P8_46": 'P8_46'
+      };
+
       function Beaglebone(opts) {
         Beaglebone.__super__.constructor.apply(this, arguments);
         this.connection = opts.connection;
@@ -163,7 +175,7 @@
       Beaglebone.prototype.pwmWrite = function(pinNum, value) {
         var pin,
           _this = this;
-        pin = this.pwmPins[this._translatePin(pinNum)];
+        pin = this.pwmPins[this._translatePwmPin(pinNum)];
         if (pin != null) {
           pin.pwmWrite(value);
         } else {
@@ -212,6 +224,10 @@
 
       Beaglebone.prototype._translatePin = function(pinNum) {
         return PINS[pinNum];
+      };
+
+      Beaglebone.prototype._translatePwmPin = function(pinNum) {
+        return PWM_PINS[pinNum];
       };
 
       Beaglebone.prototype._disconnectPins = function() {
