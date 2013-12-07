@@ -161,9 +161,21 @@
       };
 
       Beaglebone.prototype.pwmWrite = function(pinNum, value) {
-        var pin;
-        pin = this._pwmPin(pinNum);
-        pin.pwmWrite(value);
+        var pin,
+          _this = this;
+        pin = this.pwmPins[this._translatePin(pinNum)];
+        if (pin != null) {
+          pin.pwmWrite(value);
+        } else {
+          pin = this._pwmPin(pinNum);
+          pin.on('pwmWrite', function(val) {
+            return _this.connection.emit('pwmWrite', val);
+          });
+          pin.on('connect', function(data) {
+            return pin.pwmWrite(value);
+          });
+          pin.connect();
+        }
         return value;
       };
 
@@ -175,8 +187,7 @@
       };
 
       Beaglebone.prototype._pwmPin = function(pinNum) {
-        var gpioPinNum, size;
-        gpioPinNum = this._translatePin(pinNum);
+        var size;
         if (this.pwmPins[gpioPinNum] == null) {
           size = Object.keys(this.pwmPins).length;
           this.pwmPins[gpioPinNum] = new Cylon.IO.PwmPin({

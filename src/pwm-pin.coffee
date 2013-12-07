@@ -32,17 +32,22 @@ namespace 'Cylon.IO', ->
       if @loadPwmModule
         am33xx = @_findFile(@_capemgrDir(), /pwm_test_.+/)
         unless am33xx?
-          FS.appendFile(@_slotsPath(), "am33xx_pwm\n")
+          FS.appendFileSync(@_slotsPath(), "am33xx_pwm\n")
 
-      FS.appendFile(@_slotsPath(), "bone_pwm_#{ @pinNum }\n")
+      FS.appendFileSync(@_slotsPath(), "bone_pwm_#{ @pinNum }\n", (err) =>
+        unless err
+          FS.appendFileSync(@_periodPath(), @period, (err) =>
+            @emit('connect') unless err
+          )
+      )
 
       # Probably need to killoff Pwm and invert polarity.
       # Still need to checking out if really needed.
       #FS.appendFile(@_runPath(), '0')
       #FS.appendFile(@_polarityPath(), '0')
       #FS.appendFile(@_runPath(), '1')
-      FS.appendFile(@_periodPath(), @period)
-      @emit('connect')
+
+      true
 
     close: ->
       #FS.appendFile(@_runPath(), '0', (err) =>

@@ -136,8 +136,16 @@ namespace "Cylon.Adaptor", ->
       value
 
     pwmWrite: (pinNum, value) ->
-      pin = @_pwmPin(pinNum)
-      pin.pwmWrite(value)
+
+      pin = @pwmPins[@_translatePin(pinNum)]
+
+      if pin?
+        pin.pwmWrite(value)
+      else
+        pin = @_pwmPin(pinNum)
+        pin.on('pwmWrite', (val) => @connection.emit('pwmWrite', val))
+        pin.on('connect', (data) => pin.pwmWrite(value))
+        pin.connect()
 
       value
 
@@ -148,7 +156,6 @@ namespace "Cylon.Adaptor", ->
       angle
 
     _pwmPin: (pinNum) ->
-      gpioPinNum = @_translatePin(pinNum)
       unless @pwmPins[gpioPinNum]?
         size = Object.keys(@pwmPins).length
         @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size > 0))

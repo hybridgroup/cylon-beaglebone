@@ -37,16 +37,24 @@
       }
 
       PwmPin.prototype.connect = function() {
-        var am33xx;
+        var am33xx,
+          _this = this;
         if (this.loadPwmModule) {
           am33xx = this._findFile(this._capemgrDir(), /pwm_test_.+/);
           if (am33xx == null) {
-            FS.appendFile(this._slotsPath(), "am33xx_pwm\n");
+            FS.appendFileSync(this._slotsPath(), "am33xx_pwm\n");
           }
         }
-        FS.appendFile(this._slotsPath(), "bone_pwm_" + this.pinNum + "\n");
-        FS.appendFile(this._periodPath(), this.period);
-        return this.emit('connect');
+        FS.appendFileSync(this._slotsPath(), "bone_pwm_" + this.pinNum + "\n", function(err) {
+          if (!err) {
+            return FS.appendFileSync(_this._periodPath(), _this.period, function(err) {
+              if (!err) {
+                return _this.emit('connect');
+              }
+            });
+          }
+        });
+        return true;
       };
 
       PwmPin.prototype.close = function() {};
