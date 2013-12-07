@@ -81,7 +81,7 @@ namespace "Cylon.Adaptor", ->
       "P9_31": 110
     }
 
-    PWM_PINS: {
+    PWM_PINS= {
       "P9_14": 'P9_14',
       "P9_21": 'P9_21',
       "P9_22": 'P9_22',

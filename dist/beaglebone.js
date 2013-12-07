@@ -19,7 +19,7 @@
 
   namespace("Cylon.Adaptor", function() {
     return this.Beaglebone = (function(_super) {
-      var PINS;
+      var PINS, PWM_PINS;
 
       __extends(Beaglebone, _super);
 
@@ -91,7 +91,7 @@
         "P9_31": 110
       };
 
-      Beaglebone.prototype.PWM_PINS = {
+      PWM_PINS = {
         "P9_14": 'P9_14',
         "P9_21": 'P9_21',
         "P9_22": 'P9_22',
