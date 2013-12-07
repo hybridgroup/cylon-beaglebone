@@ -45,9 +45,9 @@
             FS.appendFileSync(this._slotsPath(), "am33xx_pwm\n");
           }
         }
-        FS.appendFileSync(this._slotsPath(), "bone_pwm_" + this.pinNum + "\n", function(err) {
+        FS.appendFile(this._slotsPath(), "bone_pwm_" + this.pinNum + "\n", function(err) {
           if (!err) {
-            return FS.appendFileSync(_this._periodPath(), _this.period, function(err) {
+            return FS.appendFile(_this._periodPath(), _this.period, function(err) {
               if (!err) {
                 return _this.emit('connect');
               }

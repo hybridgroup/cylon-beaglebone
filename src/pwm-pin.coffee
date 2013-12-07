@@ -34,9 +34,9 @@ namespace 'Cylon.IO', ->
         unless am33xx?
           FS.appendFileSync(@_slotsPath(), "am33xx_pwm\n")
 
-      FS.appendFileSync(@_slotsPath(), "bone_pwm_#{ @pinNum }\n", (err) =>
+      FS.appendFile(@_slotsPath(), "bone_pwm_#{ @pinNum }\n", (err) =>
         unless err
-          FS.appendFileSync(@_periodPath(), @period, (err) =>
+          FS.appendFile(@_periodPath(), @period, (err) =>
             @emit('connect') unless err
           )
       )

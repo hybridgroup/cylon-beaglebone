@@ -199,7 +199,8 @@
       };
 
       Beaglebone.prototype._pwmPin = function(pinNum) {
-        var size;
+        var gpioPinNum, size;
+        gpioPinNum = this._translatePwmPin(pinNum);
         if (this.pwmPins[gpioPinNum] == null) {
           size = Object.keys(this.pwmPins).length;
           this.pwmPins[gpioPinNum] = new Cylon.IO.PwmPin({

@@ -168,6 +168,7 @@ namespace "Cylon.Adaptor", ->
       angle
 
     _pwmPin: (pinNum) ->
+      gpioPinNum = @_translatePwmPin(pinNum)
       unless @pwmPins[gpioPinNum]?
         size = Object.keys(@pwmPins).length
         @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size > 0))
