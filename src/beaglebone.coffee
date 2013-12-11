@@ -124,7 +124,7 @@ namespace "Cylon.Adaptor", ->
       gpioPinNum = @_translatePwmPin(pinNum)
       unless @pwmPins[gpioPinNum]?
         size = Object.keys(@pwmPins).length
-        @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size > 0))
+        @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size is 0))
       @pwmPins[gpioPinNum]
 
     _digitalPin: (pinNum, mode) ->

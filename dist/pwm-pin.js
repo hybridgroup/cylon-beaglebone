@@ -40,7 +40,7 @@
         var am33xx,
           _this = this;
         if (this.loadPwmModule) {
-          am33xx = this._findFile(this._capemgrDir(), /^pwm_test_.+/);
+          am33xx = this._findFile(this._ocpDir(), /^pwm_test_.+/);
           if (am33xx == null) {
             FS.appendFileSync(this._slotsPath(), "am33xx_pwm\n");
           }
@@ -48,7 +48,9 @@
         FS.appendFile(this._slotsPath(), "bone_pwm_" + this.pinNum + "\n", function(err) {
           if (!err) {
             return FS.appendFile(_this._periodPath(), _this.period, function(err) {
-              if (!err) {
+              if (err) {
+                return _this.emit('error', err);
+              } else {
                 return _this.emit('connect');
               }
             });
@@ -93,7 +95,7 @@
             this.capemgrDir = "" + CAPEMGR_DIR + "/" + capemgr;
           }
         }
-        return this.capemagrDir;
+        return this.capemgrDir;
       };
 
       PwmPin.prototype._slotsPath = function() {
@@ -151,7 +153,7 @@
       };
 
       PwmPin.prototype._polarityPath = function() {
-        return "" + (this._pwmDir()) + "/duty";
+        return "" + (this._pwmDir()) + "/polarity";
       };
 
       PwmPin.prototype._releaseCallback = function(err) {
