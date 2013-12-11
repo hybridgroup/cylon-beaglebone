@@ -57,7 +57,9 @@
         return true;
       };
 
-      PwmPin.prototype.close = function() {};
+      PwmPin.prototype.close = function() {
+        return true;
+      };
 
       PwmPin.prototype.closeSync = function() {
         return this._releaseCallback(false);

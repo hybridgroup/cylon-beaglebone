@@ -41,18 +41,10 @@ namespace 'Cylon.IO', ->
           )
       )
 
-      # Probably need to killoff Pwm and invert polarity.
-      # Still need to checking out if really needed.
-      #FS.appendFile(@_runPath(), '0')
-      #FS.appendFile(@_polarityPath(), '0')
-      #FS.appendFile(@_runPath(), '1')
-
       true
 
     close: ->
-      #FS.appendFile(@_runPath(), '0', (err) =>
-      #  @_releaseCallback(err)
-      #)
+      true
 
     closeSync: ->
       #FS.appendFileSync("#{ @_pwmPath() }/run", '0')
