@@ -13,7 +13,7 @@ EventEmitter = require('events').EventEmitter
 
 namespace = require 'node-namespace'
 
-# PwmPin class to interface with Pi-Blaster in the raspberry-pi
+# PwmPin class to interface with Beaglebone pwm kernel modules
 #
 namespace 'Cylon.IO', ->
   class @PwmPin extends EventEmitter
