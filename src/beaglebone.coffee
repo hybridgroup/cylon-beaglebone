@@ -8,6 +8,7 @@
 
 'use strict'
 
+require "./pwm-pin"
 namespace = require 'node-namespace'
 
 namespace "Cylon.Adaptor", ->
@@ -77,7 +78,19 @@ namespace "Cylon.Adaptor", ->
       "P9_28": 113,
       "P9_29": 111,
       "P9_30": 112,
-      "P9_31": 110,
+      "P9_31": 110
+    }
+
+    PWM_PINS= {
+      "P9_14": 'P9_14',
+      "P9_21": 'P9_21',
+      "P9_22": 'P9_22',
+      "P9_29": 'P9_29',
+      "P9_42": 'P9_42',
+      "P8_13": 'P8_13',
+      "P8_34": 'P8_34',
+      "P8_45": 'P8_45',
+      "P8_46": 'P8_46'
     }
 
     constructor: (opts) ->
@@ -90,7 +103,7 @@ namespace "Cylon.Adaptor", ->
       @myself
 
     commands: ->
-      ['pins', 'digitalRead', 'digitalWrite']#, 'pwmWrite', 'servoWrite', 'firmwareName']
+      ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName']
       #'sendI2CConfig', 'sendI2CWriteRequest', 'sendI2CReadRequest']
 
     connect: (callback) ->
@@ -135,21 +148,31 @@ namespace "Cylon.Adaptor", ->
       value
 
     pwmWrite: (pinNum, value) ->
-      #pin = @_pwmPin(pinNum)
-      #pin.pwmWrite(value)
+
+      pin = @pwmPins[@_translatePwmPin(pinNum)]
+
+      if pin?
+        pin.pwmWrite(value)
+      else
+        pin = @_pwmPin(pinNum)
+        pin.on('pwmWrite', (val) => @connection.emit('pwmWrite', val))
+        pin.on('connect', (data) => pin.pwmWrite(value))
+        pin.connect()
 
       value
 
     servoWrite: (pinNum, angle) ->
-      #pin = @_pwmPin(pinNum)
-      #pin.servoWrite(angle)
+      pin = @_pwmPin(pinNum)
+      pin.servoWrite(angle)
 
       angle
 
     _pwmPin: (pinNum) ->
-      #gpioPinNum = @_translatePin(pinNum)
-      #@pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum) unless @pwmPins[gpioPinNum]?
-      #@pwmPins[gpioPinNum]
+      gpioPinNum = @_translatePwmPin(pinNum)
+      unless @pwmPins[gpioPinNum]?
+        size = Object.keys(@pwmPins).length
+        @pwmPins[gpioPinNum] = new Cylon.IO.PwmPin(pin: gpioPinNum, loadPwmModule: (size > 0))
+      @pwmPins[gpioPinNum]
 
     _digitalPin: (pinNum, mode) ->
       gpioPinNum = @_translatePin(pinNum)
@@ -158,6 +181,9 @@ namespace "Cylon.Adaptor", ->
 
     _translatePin: (pinNum) ->
       PINS[pinNum]
+
+    _translatePwmPin: (pinNum) ->
+      PWM_PINS[pinNum]
 
     _disconnectPins: ->
       for key, pin of @pins
