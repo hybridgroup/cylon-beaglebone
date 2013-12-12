@@ -192,9 +192,6 @@
       };
 
       Beaglebone.prototype.servoWrite = function(pinNum, angle) {
-        var pin;
-        pin = this._pwmPin(pinNum);
-        pin.servoWrite(angle);
         return angle;
       };
 
@@ -205,7 +202,7 @@
           size = Object.keys(this.pwmPins).length;
           this.pwmPins[gpioPinNum] = new Cylon.IO.PwmPin({
             pin: gpioPinNum,
-            loadPwmModule: size > 0
+            loadPwmModule: size === 0
           });
         }
         return this.pwmPins[gpioPinNum];

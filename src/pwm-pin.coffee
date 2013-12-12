@@ -30,14 +30,17 @@ namespace 'Cylon.IO', ->
 
     connect: () ->
       if @loadPwmModule
-        am33xx = @_findFile(@_capemgrDir(), /^pwm_test_.+/)
+        am33xx = @_findFile(@_ocpDir(), /^pwm_test_.+/)
         unless am33xx?
           FS.appendFileSync(@_slotsPath(), "am33xx_pwm\n")
 
       FS.appendFile(@_slotsPath(), "bone_pwm_#{ @pinNum }\n", (err) =>
         unless err
           FS.appendFile(@_periodPath(), @period, (err) =>
-            @emit('connect') unless err
+            if err
+              @emit('error', err)
+            else
+              @emit('connect')
           )
       )
 
@@ -71,7 +74,7 @@ namespace 'Cylon.IO', ->
         capemgr = @_findFile(CAPEMGR_DIR, /^bone_capemgr\.\d+$/)
         @capemgrDir = "#{ CAPEMGR_DIR }/#{ capemgr }" if capemgr?
 
-      @capemagrDir
+      @capemgrDir
 
     _slotsPath: () ->
       "#{ @_capemgrDir() }/slots"
@@ -112,7 +115,7 @@ namespace 'Cylon.IO', ->
       "#{ @_pwmDir() }/duty"
 
     _polarityPath: () ->
-      "#{ @_pwmDir() }/duty"
+      "#{ @_pwmDir() }/polarity"
 
     _releaseCallback: (err) ->
       if(err)
