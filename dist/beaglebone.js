@@ -192,21 +192,6 @@
       };
 
       Beaglebone.prototype.servoWrite = function(pinNum, angle) {
-        var pin,
-          _this = this;
-        pin = this.pwmPins[this._translatePwmPin(pinNum)];
-        if (pin != null) {
-          pin.servoWrite(angle);
-        } else {
-          pin = this._pwmPin(pinNum);
-          pin.on('pwmWrite', function(val) {
-            return _this.connection.emit('pwmWrite', val);
-          });
-          pin.on('connect', function(data) {
-            return pin.servoWrite(angle);
-          });
-          pin.connect();
-        }
         return angle;
       };
 
