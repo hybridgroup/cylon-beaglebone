@@ -8,11 +8,12 @@
 
 'use strict'
 
+require "./cylon-beaglebone"
 require "./pwm-pin"
 namespace = require 'node-namespace'
 
-namespace "Cylon.Adaptor", ->
-  class @Beaglebone extends Cylon.Basestar
+namespace "Cylon.Adaptors", ->
+  class @Beaglebone extends Cylon.Adaptors.Adaptor
     PINS= {
       "P8_3": 38, "P8_4": 39, "P8_5": 34, "P8_6": 35,
       "P8_7": 66, "P8_8": 67, "P8_9": 69, "P8_10": 68,
@@ -41,8 +42,6 @@ namespace "Cylon.Adaptor", ->
 
     constructor: (opts) ->
       super
-      @connection = opts.connection
-      @name = opts.name
       @board = ""
       @pins = {}
       @pwmPins = {}
@@ -53,9 +52,7 @@ namespace "Cylon.Adaptor", ->
       #'sendI2CConfig', 'sendI2CWriteRequest', 'sendI2CReadRequest']
 
     connect: (callback) ->
-      Logger.debug "Connecting to board '#{@name}'..."
-      @connection.emit 'connect'
-      (callback)(null)
+      super
 
       @proxyMethods @commands, @board, @myself
 

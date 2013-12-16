@@ -14,7 +14,7 @@ GPIO = require "cylon-gpio"
 
 module.exports =
   adaptor: (args...) ->
-    new Cylon.Adaptor.Beaglebone(args...)
+    new Cylon.Adaptors.Beaglebone(args...)
 
   driver: (args...) ->
     GPIO.driver(args...)
