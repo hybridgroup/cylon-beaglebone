@@ -244,7 +244,7 @@
 
       return Beaglebone;
 
-    })(Cylon.Adaptors.Adaptor);
+    })(Cylon.Adaptor);
   });
 
 }).call(this);

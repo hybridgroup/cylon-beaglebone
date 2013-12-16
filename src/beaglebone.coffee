@@ -13,7 +13,7 @@ require "./pwm-pin"
 namespace = require 'node-namespace'
 
 namespace "Cylon.Adaptors", ->
-  class @Beaglebone extends Cylon.Adaptors.Adaptor
+  class @Beaglebone extends Cylon.Adaptor
     PINS= {
       "P8_3": 38, "P8_4": 39, "P8_5": 34, "P8_6": 35,
       "P8_7": 66, "P8_8": 67, "P8_9": 69, "P8_10": 68,
