@@ -196,11 +196,12 @@
         return angle;
       };
 
-      Beaglebone.prototype.i2cWrite = function(address, cmd, buffer, callback) {
+      Beaglebone.prototype.i2cWrite = function(address, cmd, buff, callback) {
         if (callback == null) {
           callback = null;
         }
-        return this._i2cDevice(address).write(cmd, buffer, callback);
+        buff = buff != null ? buff : [];
+        return this._i2cDevice(address).write(cmd, buff, callback);
       };
 
       Beaglebone.prototype.i2cRead = function(address, cmd, length, callback) {

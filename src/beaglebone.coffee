@@ -112,8 +112,9 @@ namespace "Cylon.Adaptors", ->
       angle
 
     # If callback is provided an async call will be made, otherwise sync.
-    i2cWrite: (address, cmd, buffer, callback = null) ->
-      @_i2cDevice(address).write(cmd, buffer, callback)
+    i2cWrite: (address, cmd, buff, callback = null) ->
+      buff = buff ? []
+      @_i2cDevice(address).write(cmd, buff, callback)
 
     # If callback is provided an async call will be made, otherwise sync.
     i2cRead: (address, cmd, length, callback = null) ->
