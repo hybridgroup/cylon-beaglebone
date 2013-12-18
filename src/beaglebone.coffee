@@ -8,9 +8,9 @@
 
 'use strict'
 
-require "./cylon-beaglebone"
-require "./pwm-pin"
-require "cylon-i2c"
+require './cylon-beaglebone'
+require './pwm-pin'
+
 namespace = require 'node-namespace'
 
 namespace "Cylon.Adaptors", ->
@@ -120,7 +120,7 @@ namespace "Cylon.Adaptors", ->
       @_i2cDevice(address).read(cmd, length, callback)
 
     _i2cDevice: (address) ->
-      @i2cDevices[address] = new I2CDevice(address: address, interface: I2C_INTERFACE) unless @i2cDevices[address]?
+      @i2cDevices[address] = new Cylon.I2C.I2CDevice(address: address, interface: I2C_INTERFACE) unless @i2cDevices[address]?
       @i2cDevices[address]
 
     _pwmPin: (pinNum) ->

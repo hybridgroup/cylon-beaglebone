@@ -13,11 +13,9 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  require("./cylon-beaglebone");
+  require('./cylon-beaglebone');
 
-  require("./pwm-pin");
-
-  require("cylon-i2c");
+  require('./pwm-pin');
 
   namespace = require('node-namespace');
 
@@ -214,7 +212,7 @@
 
       Beaglebone.prototype._i2cDevice = function(address) {
         if (this.i2cDevices[address] == null) {
-          this.i2cDevices[address] = new I2CDevice({
+          this.i2cDevices[address] = new Cylon.I2C.I2CDevice({
             address: address,
             "interface": I2C_INTERFACE
           });
