@@ -149,7 +149,7 @@ namespace 'Cylon.IO', ->
       # with a frequency of 50hz (period of 20ms) the 10% of the value
       # will give us full servo range (adding 0.5ms to account that
       # the range starts at 0.5 not 0)
-      maxDutyCicle = @period * 0.10
+      maxDutyCycle = @period * 0.10
       # We now calculate the 'ON' time or duty cicle based on the angle
       # parameter received.
       calc = Math.round(((maxDutyCycle / 180) * angle) + 500000) # We add 500000 which represent 0.5ms in nanoseconds

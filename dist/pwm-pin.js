@@ -200,8 +200,8 @@
       };
 
       PwmPin.prototype._servoVal = function(angle) {
-        var calc, maxDutyCicle;
-        maxDutyCicle = this.period * 0.10;
+        var calc, maxDutyCycle;
+        maxDutyCycle = this.period * 0.10;
         calc = Math.round(((maxDutyCycle / 180) * angle) + 500000);
         calc = calc > 2500000 ? 2500000 : calc;
         calc = calc < 500000 ? 500000 : calc;
