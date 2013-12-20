@@ -76,7 +76,7 @@
         }
         this.value = value;
         this.pwmVal = (servo != null) ? this._servoVal(value) : this._pwmVal(value);
-        return FS.appendFile(this._dutyPath(), "" + this.pwmVal + "\n", function(err) {
+        FS.appendFile(this._dutyPath(), "" + this.pwmVal + "\n", function(err) {
           if (err) {
             return _this.emit('error', "Error occurred while writing value " + _this.pbVal + " to pin " + _this.pinNum);
           } else {
@@ -87,21 +87,22 @@
             }
           }
         });
+        return true;
       };
 
       PwmPin.prototype.servoWrite = function(angle) {
         if (this.freq === SERVO_FREQ) {
           return this.pwmWrite(angle, true);
         } else {
-          return this._setServoFreq();
+          return this._setServoFreq(angle);
         }
       };
 
-      PwmPin.prototype._setServoFreq = function() {
+      PwmPin.prototype._setServoFreq = function(angle) {
         var servoPeriod,
           _this = this;
         servoPeriod = this._calcPeriod(SERVO_FREQ);
-        return FS.appendFile(this._periodPath(), servoPeriod, function(err) {
+        FS.appendFile(this._periodPath(), servoPeriod, function(err) {
           if (err) {
             return _this.emit('error', err);
           } else {
@@ -110,6 +111,7 @@
             return _this.pwmWrite(angle, true);
           }
         });
+        return true;
       };
 
       PwmPin.prototype._capemgrDir = function() {

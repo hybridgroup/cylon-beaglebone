@@ -68,14 +68,15 @@ namespace 'Cylon.IO', ->
           else
             @emit('pwmWrite', value)
       )
+      true
 
     servoWrite: (angle) ->
       if @freq is SERVO_FREQ
         @pwmWrite(angle, true)
       else
-        @_setServoFreq()
+        @_setServoFreq(angle)
 
-    _setServoFreq: () ->
+    _setServoFreq: (angle) ->
       servoPeriod = @_calcPeriod(SERVO_FREQ)
       FS.appendFile(@_periodPath(), servoPeriod, (err) =>
         if err
@@ -85,6 +86,7 @@ namespace 'Cylon.IO', ->
           @period = servoPeriod
           @pwmWrite(angle, true)
       )
+      true
 
     _capemgrDir: () ->
       unless @capemgrDir?
