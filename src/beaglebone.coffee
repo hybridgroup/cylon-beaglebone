@@ -105,6 +105,15 @@ namespace "Cylon.Adaptors", ->
       value
 
     servoWrite: (pinNum, angle) ->
+      pin = @pwmPins[@_translatePwmPin(pinNum)]
+
+      if pin?
+        pin.servoWrite(angle)
+      else
+        pin = @_pwmPin(pinNum)
+        pin.on('servoWrite', (val) => @connection.emit('servoWrite', val))
+        pin.on('connect', (data) => pin.servoWrite(angle))
+        pin.connect()
       angle
 
     _pwmPin: (pinNum) ->
