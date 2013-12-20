@@ -21,17 +21,19 @@
 
   namespace('Cylon.IO', function() {
     return this.PwmPin = (function(_super) {
-      var CAPEMGR_DIR;
+      var CAPEMGR_DIR, SERVO_FREQ;
 
       __extends(PwmPin, _super);
 
       CAPEMGR_DIR = "/sys/devices";
 
+      SERVO_FREQ = 50;
+
       function PwmPin(opts) {
         this.pinNum = opts.pin;
         this.loadPwmModule = opts.loadPwmModule != null ? opts.loadPwmModule : false;
         this.freq = 2000;
-        this.period = Math.round(1.0e9 / this.freq);
+        this.period = this._calcPeriod(this.freq);
         this.duty = 500000;
         this.ready = false;
       }
@@ -74,17 +76,42 @@
         }
         this.value = value;
         this.pwmVal = (servo != null) ? this._servoVal(value) : this._pwmVal(value);
-        return FS.appendFile(this._dutyPath(), "" + this.pwmVal + "\n", function(err) {
+        FS.appendFile(this._dutyPath(), "" + this.pwmVal + "\n", function(err) {
           if (err) {
             return _this.emit('error', "Error occurred while writing value " + _this.pbVal + " to pin " + _this.pinNum);
           } else {
-            return _this.emit('pwmWrite', value);
+            if (servo) {
+              return _this.emit('servoWrite', value);
+            } else {
+              return _this.emit('pwmWrite', value);
+            }
           }
         });
+        return true;
       };
 
       PwmPin.prototype.servoWrite = function(angle) {
-        return this.pwmWrite(angle, true);
+        if (this.freq === SERVO_FREQ) {
+          return this.pwmWrite(angle, true);
+        } else {
+          return this._setServoFreq(angle);
+        }
+      };
+
+      PwmPin.prototype._setServoFreq = function(angle) {
+        var servoPeriod,
+          _this = this;
+        servoPeriod = this._calcPeriod(SERVO_FREQ);
+        FS.appendFile(this._periodPath(), servoPeriod, function(err) {
+          if (err) {
+            return _this.emit('error', err);
+          } else {
+            _this.freq = SERVO_FREQ;
+            _this.period = servoPeriod;
+            return _this.pwmWrite(angle, true);
+          }
+        });
+        return true;
       };
 
       PwmPin.prototype._capemgrDir = function() {
@@ -173,12 +200,17 @@
       };
 
       PwmPin.prototype._servoVal = function(angle) {
-        var calc;
-        calc = Math.round((((angle * 0.20) / 180) + 0.05) * 100) / 100;
-        calc = calc > 0.249 ? 0.249 : calc;
-        calc = calc < 0.05 ? 0.05 : calc;
-        calc = this.period - (this.period * calc);
+        var calc, maxDutyCycle;
+        maxDutyCycle = this.period * 0.10;
+        calc = Math.round(((maxDutyCycle / 180) * angle) + 500000);
+        calc = calc > 2500000 ? 2500000 : calc;
+        calc = calc < 500000 ? 500000 : calc;
+        calc = this.period - calc;
         return calc;
+      };
+
+      PwmPin.prototype._calcPeriod = function(freq) {
+        return Math.round(1.0e9 / freq);
       };
 
       return PwmPin;
