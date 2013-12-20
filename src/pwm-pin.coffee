@@ -19,12 +19,13 @@ namespace 'Cylon.IO', ->
   class @PwmPin extends EventEmitter
 
     CAPEMGR_DIR = "/sys/devices"
+    SERVO_FREQ = 50
 
     constructor: (opts) ->
       @pinNum = opts.pin
       @loadPwmModule = if opts.loadPwmModule? then opts.loadPwmModule else false
       @freq = 2000
-      @period = Math.round(1.0e9 / @freq)
+      @period = @_calcPeriod(@freq)
       @duty= 500000
       @ready = false
 
@@ -43,7 +44,6 @@ namespace 'Cylon.IO', ->
               @emit('connect')
           )
       )
-
       true
 
     close: ->
@@ -63,17 +63,33 @@ namespace 'Cylon.IO', ->
         if (err)
           @emit('error', "Error occurred while writing value #{ @pbVal } to pin #{ @pinNum }")
         else
-          @emit('pwmWrite', value)
+          if servo
+            @emit('servoWrite', value)
+          else
+            @emit('pwmWrite', value)
       )
 
     servoWrite: (angle) ->
-      @pwmWrite(angle, true)
+      if @freq is SERVO_FREQ
+        @pwmWrite(angle, true)
+      else
+        @_setServoFreq()
+
+    _setServoFreq: () ->
+      servoPeriod = @_calcPeriod(SERVO_FREQ)
+      FS.appendFile(@_periodPath(), servoPeriod, (err) =>
+        if err
+          @emit('error', err)
+        else
+          @freq = SERVO_FREQ
+          @period = servoPeriod
+          @pwmWrite(angle, true)
+      )
 
     _capemgrDir: () ->
       unless @capemgrDir?
         capemgr = @_findFile(CAPEMGR_DIR, /^bone_capemgr\.\d+$/)
         @capemgrDir = "#{ CAPEMGR_DIR }/#{ capemgr }" if capemgr?
-
       @capemgrDir
 
     _slotsPath: () ->
@@ -83,7 +99,6 @@ namespace 'Cylon.IO', ->
       unless @ocpDir
         ocp = @_findFile(CAPEMGR_DIR, /^ocp\.\d+$/)
         @ocpDir = "#{ CAPEMGR_DIR }/#{ ocp }" if ocp?
-
       @ocpDir
 
     _pwmDir: () ->
@@ -91,7 +106,6 @@ namespace 'Cylon.IO', ->
         regex = new RegExp("^pwm_test_#{ @pinNum }\\.\\d+$")
         pwm = @_findFile(@_ocpDir(), regex)
         @pwmDir = "#{ @_ocpDir() }/#{ pwm }" if pwm?
-
       @pwmDir
 
     _findFile: (dirName, nameRegex) ->
@@ -102,7 +116,6 @@ namespace 'Cylon.IO', ->
         if file?
           file = file[0]
           break
-
       file
 
     _runPath: () ->
@@ -130,8 +143,20 @@ namespace 'Cylon.IO', ->
       calc
 
     _servoVal: (angle) ->
-      calc = Math.round((((angle*0.20) / 180) + 0.05) * 100) / 100
-      calc = if (calc > 0.249) then 0.249 else calc
-      calc = if (calc < 0.05) then 0.05 else calc
-      calc = @period - (@period * calc)
+      # Servo DutyCycle should be 0.5ms to 2.5ms for full range servos
+      # with a frequency of 50hz (period of 20ms) the 10% of the value
+      # will give us full servo range (adding 0.5ms to account that
+      # the range starts at 0.5 not 0)
+      maxDutyCicle = @period * 0.10
+      # We now calculate the 'ON' time or duty cicle based on the angle
+      # parameter received.
+      calc = Math.round(((maxDutyCycle / 180) * angle) + 500000) # We add 500000 which represent 0.5ms in nanoseconds
+      calc = if (calc > 2500000) then 2500000 else calc
+      calc = if (calc < 500000) then 500000 else calc
+      # Since we are using inverted polarity we substract the calculated
+      # value from the period to obtain the real duty value
+      calc = @period - calc
       calc
+
+    _calcPeriod: (freq) ->
+      Math.round(1.0e9 / freq)
