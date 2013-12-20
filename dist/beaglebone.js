@@ -13,15 +13,15 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  require("./cylon-beaglebone");
+  require('./cylon-beaglebone');
 
-  require("./pwm-pin");
+  require('./pwm-pin');
 
   namespace = require('node-namespace');
 
   namespace("Cylon.Adaptors", function() {
     return this.Beaglebone = (function(_super) {
-      var PINS, PWM_PINS;
+      var I2C_INTERFACE, PINS, PWM_PINS;
 
       __extends(Beaglebone, _super);
 
@@ -105,16 +105,19 @@
         "P8_46": 'P8_46'
       };
 
+      I2C_INTERFACE = '/dev/i2c-1';
+
       function Beaglebone(opts) {
         Beaglebone.__super__.constructor.apply(this, arguments);
         this.board = "";
         this.pins = {};
         this.pwmPins = {};
+        this.i2cDevices = {};
         this.myself;
       }
 
       Beaglebone.prototype.commands = function() {
-        return ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName'];
+        return ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName', 'i2cWrite', 'i2cRead'];
       };
 
       Beaglebone.prototype.connect = function(callback) {
@@ -206,6 +209,31 @@
           pin.connect();
         }
         return angle;
+      };
+
+      Beaglebone.prototype.i2cWrite = function(address, cmd, buff, callback) {
+        if (callback == null) {
+          callback = null;
+        }
+        buff = buff != null ? buff : [];
+        return this._i2cDevice(address).write(cmd, buff, callback);
+      };
+
+      Beaglebone.prototype.i2cRead = function(address, cmd, length, callback) {
+        if (callback == null) {
+          callback = null;
+        }
+        return this._i2cDevice(address).read(cmd, length, callback);
+      };
+
+      Beaglebone.prototype._i2cDevice = function(address) {
+        if (this.i2cDevices[address] == null) {
+          this.i2cDevices[address] = new Cylon.I2C.I2CDevice({
+            address: address,
+            "interface": I2C_INTERFACE
+          });
+        }
+        return this.i2cDevices[address];
       };
 
       Beaglebone.prototype._pwmPin = function(pinNum) {

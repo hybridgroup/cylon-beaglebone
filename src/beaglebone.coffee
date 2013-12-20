@@ -8,8 +8,9 @@
 
 'use strict'
 
-require "./cylon-beaglebone"
-require "./pwm-pin"
+require './cylon-beaglebone'
+require './pwm-pin'
+
 namespace = require 'node-namespace'
 
 namespace "Cylon.Adaptors", ->
@@ -40,16 +41,19 @@ namespace "Cylon.Adaptors", ->
       "P8_34": 'P8_34', "P8_45": 'P8_45', "P8_46": 'P8_46'
     }
 
+    I2C_INTERFACE = '/dev/i2c-1'
+
     constructor: (opts) ->
       super
       @board = ""
       @pins = {}
       @pwmPins = {}
+      @i2cDevices = {}
       @myself
 
     commands: ->
-      ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite', 'firmwareName']
-      #'sendI2CConfig', 'sendI2CWriteRequest', 'sendI2CReadRequest']
+      ['pins', 'digitalRead', 'digitalWrite', 'pwmWrite', 'servoWrite',
+       'firmwareName', 'i2cWrite', 'i2cRead']#'sendI2CConfig'
 
     connect: (callback) ->
       super
@@ -115,6 +119,19 @@ namespace "Cylon.Adaptors", ->
         pin.on('connect', (data) => pin.servoWrite(angle))
         pin.connect()
       angle
+
+    # If callback is provided an async call will be made, otherwise sync.
+    i2cWrite: (address, cmd, buff, callback = null) ->
+      buff = buff ? []
+      @_i2cDevice(address).write(cmd, buff, callback)
+
+    # If callback is provided an async call will be made, otherwise sync.
+    i2cRead: (address, cmd, length, callback = null) ->
+      @_i2cDevice(address).read(cmd, length, callback)
+
+    _i2cDevice: (address) ->
+      @i2cDevices[address] = new Cylon.I2C.I2CDevice(address: address, interface: I2C_INTERFACE) unless @i2cDevices[address]?
+      @i2cDevices[address]
 
     _pwmPin: (pinNum) ->
       gpioPinNum = @_translatePwmPin(pinNum)
