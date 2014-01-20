@@ -8,7 +8,6 @@
 
 'use strict'
 
-#require './cylon-beaglebone'
 require './pwm-pin'
 require './i2c-device'
 
