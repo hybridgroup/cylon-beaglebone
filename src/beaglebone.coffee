@@ -10,6 +10,7 @@
 
 require './pwm-pin'
 require './i2c-device'
+require './cylon-beaglebone'
 
 namespace = require 'node-namespace'
 

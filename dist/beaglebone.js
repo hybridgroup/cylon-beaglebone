@@ -17,6 +17,8 @@
 
   require('./i2c-device');
 
+  require('./cylon-beaglebone');
+
   namespace = require('node-namespace');
 
   namespace("Cylon.Adaptors", function() {
