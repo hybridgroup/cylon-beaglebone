@@ -32,7 +32,7 @@ Cylon.robot({
 ```
 
 ### CoffeeScript:
-```
+```ruby
 Cylon = require('cylon')
 
 # Initialize the robot
