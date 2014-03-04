@@ -73,6 +73,8 @@ Thank you!
 
 ## Release History
 
+Version 0.5.0 - Update to cylon 0.11.0, migrated to pure JS
+
 Version 0.4.0 - Update to cylon 0.10.0
 
 Version 0.3.0 - Release for cylon 0.9.0
