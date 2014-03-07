@@ -1,6 +1,6 @@
 {
   "name": "cylon-beaglebone",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "lib/cylon-beaglebone.js",
   "description": "Cylon adaptor for the Beaglebone Black single-board computer",
   "homepage": "http://cylonjs.com",
