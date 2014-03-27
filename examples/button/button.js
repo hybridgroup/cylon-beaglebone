@@ -8,8 +8,6 @@ Cylon.robot({
   ],
 
   work: function(my) {
-    my.button.on('push', function() {
-      my.led.toggle();
-    });
+    my.button.on('push', my.led.toggle);
   }
 }).start();
