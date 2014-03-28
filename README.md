@@ -73,6 +73,8 @@ Thank you!
 
 ## Release History
 
+Version 0.6.0 - Update to Cylon 0.12.0
+
 Version 0.5.1 - Bugfix for i2cread, and more examples
 
 Version 0.5.0 - Update to cylon 0.11.0, migrated to pure JS
