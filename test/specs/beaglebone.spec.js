@@ -1,9 +1,9 @@
 "use strict";
 
-source('beaglebone');
+var Beaglebone = source('beaglebone');
 
 describe('Cylon.Adaptors.Beaglebone', function() {
-  var beaglebone = new Cylon.Adaptors.Beaglebone;
+  var beaglebone = new Beaglebone();
 
-	it("needs more tests");
+  it("needs more tests");
 });
