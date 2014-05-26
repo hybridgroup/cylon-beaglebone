@@ -1,6 +1,6 @@
 {
   "name": "cylon-beaglebone",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "lib/cylon-beaglebone.js",
   "description": "Cylon adaptor for the Beaglebone Black single-board computer",
   "homepage": "http://cylonjs.com",
@@ -24,9 +24,9 @@
   },
 
   "dependencies": {
-    "cylon":          ">= 0.12.0",
-    "cylon-gpio":     ">= 0.12.0",
-    "cylon-i2c":      ">= 0.9.0",
-    "i2c":            ">=0.1.4"
+    "cylon":      "~0.14.0",
+    "cylon-gpio": "~0.14.0",
+    "cylon-i2c":  "~0.11.0",
+    "i2c":        ">=0.1.4"
   }
 }
