@@ -10,7 +10,7 @@ Cylon.robot({
     // pulseWidth in MicroSeconds as per servo spec sheet
     // e.g. http://www.servodatabase.com/servo/towerpro/sg90
     pulseWidth: { min: 500, max: 2400 },
-    range: { min: 20, max: 160 }
+    angleLimits: { bottom: 20, top: 160 }
   },
 
   work: function(my) {
@@ -31,12 +31,13 @@ Cylon.robot({
     // If more servo support is needed leave us a comment, raise an
     // issue or help us add more support.
 
-    var angle = 0;
-    var increment = 20;
+    var angle = 0,
+        increment = 20;
 
     every((1).seconds(), function() {
       angle += increment;
       my.servo.angle(angle);
+
       console.log("Current Angle: " + my.servo.currentAngle());
 
       if ((angle === 20) || (angle === 160)) { increment = -increment; }

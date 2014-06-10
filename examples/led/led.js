@@ -10,8 +10,12 @@ Cylon.robot({
 
     every(0.05.seconds(), function() {
       brightness += fade;
+
       my.led.brightness(brightness);
-      if ((brightness === 0) || (brightness === 255)) { fade = -fade; }
+
+      if ((brightness === 0) || (brightness === 255)) {
+        fade = -fade;
+      }
     });
   }
 }).start();
