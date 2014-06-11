@@ -10,7 +10,7 @@ Cylon.robot({
     // pulseWidth in MicroSeconds as per servo spec sheet
     // e.g. http://www.servodatabase.com/servo/towerpro/sg90
     pulseWidth: { min: 500, max: 2400 },
-    angleLimits: { bottom: 20, top: 160 }
+    limits: { bottom: 20, top: 160 }
   },
 
   work: function(my) {

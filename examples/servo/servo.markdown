@@ -19,7 +19,7 @@ Let's define the connections and devices:
          // pulseWidth in MicroSeconds as per servo spec sheet
          // e.g. http://www.servodatabase.com/servo/towerpro/sg90
          pulseWidth: { min: 500, max: 2400 },
-         angleLimits: { bottom: 20, top: 160 }
+         limits: { bottom: 20, top: 160 }
        },
 
 Now that Cylon knows about the necessary hardware we're going to be using, we'll
