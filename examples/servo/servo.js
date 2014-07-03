@@ -2,17 +2,27 @@ var Cylon = require('cylon');
 
 Cylon.robot({
   connection: { name: 'beaglebone', adaptor: 'beaglebone' },
-  device: { name: 'servo', driver: 'servo', pin: 'P9_14' },
+  device: {
+    name: 'servo',
+    driver: 'servo',
+    pin: 'P9_14',
+    freq: 50,
+    // pulseWidth in MicroSeconds as per servo spec sheet
+    // e.g. http://www.servodatabase.com/servo/towerpro/sg90
+    pulseWidth: { min: 500, max: 2400 },
+    limits: { bottom: 20, top: 160 }
+  },
 
   work: function(my) {
     // Be carefull with your servo angles or you might DAMAGE the servo!
     // Cylon uses a 50hz/s (20ms period) frequency and a Duty Cycle
-    // of 0.5ms to 2.5ms to control the servo angle movement.
+    // of 0.500 microseconds to 2400 microseconds to control the servo
+    // angle movement by default, you can change that as seen in the
+    // above declaration.
     //
-    // This means:
-    // 1. 0.5ms == 0 degrees
-    // 2. 1.5ms == 90 degrees
-    // 3. 2.5ms == 180 degrees
+    // This means pulseWidth (e.g. Servo SG90):
+    // 1. min = 500 micro seconds
+    // 2. max = 2400 micro seconds
     // (It is usually safe to start with a 90 degree angle, 1.5ms duty
     // cycle in most servos)
     //
@@ -21,15 +31,17 @@ Cylon.robot({
     // If more servo support is needed leave us a comment, raise an
     // issue or help us add more support.
 
-    var angle = 30;
-    var increment = 40;
+    var angle = 0,
+        increment = 20;
 
     every((1).seconds(), function() {
       angle += increment;
       my.servo.angle(angle);
+
       console.log("Current Angle: " + my.servo.currentAngle());
 
-      if ((angle === 30) || (angle === 150)) { increment = -increment; }
+      if ((angle === 20) || (angle === 160)) { increment = -increment; }
     });
   }
 }).start();
+
