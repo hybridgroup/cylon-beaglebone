@@ -13,9 +13,8 @@ Want to use the Go programming language to power your robots? Check out our sist
 ## Getting Started
 Install the module with: `npm install cylon-beaglebone`
 
-## Examples
+## Example
 
-### JavaScript:
 ```javascript
 var Cylon = require('cylon');
 
@@ -29,27 +28,6 @@ Cylon.robot({
     my.button.on('push', function() {my.led.toggle()});
   }
 }).start();
-```
-
-### CoffeeScript:
-```ruby
-Cylon = require('cylon')
-
-# Initialize the robot
-Cylon.robot
-  connection:
-    name: 'beaglebone', adaptor: 'beaglebone'
-
-  devices:
-    [
-      {name: 'led', driver: 'led', pin: 'P9_12'},
-      {name: 'button', driver: 'button', pin: 'P9_14'}
-    ]
-
-  work: (my) ->
-    my.button.on 'push', -> my.led.toggle()
-
-.start()
 ```
 
 ## Documentation
@@ -72,6 +50,10 @@ Thank you!
   * For git help see [progit](http://git-scm.com/book) which is an awesome (and free) book on git
 
 ## Release History
+
+Version 0.8.1 - Add peerDependencies to package.json
+
+Version 0.8.0 - Compatibility with Cylon 0.15.0
 
 Version 0.7.0 - Compatibility with Cylon 0.14.0, remove node-namespace.
 
