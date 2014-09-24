@@ -9,7 +9,7 @@ Cylon.robot({
   work: function(my) {
     every((0.1).seconds(), function() {
       brightness = my.sensor.analogRead().fromScale(0, 1799).toScale(0, 255) | 0;
-      Cylon.Logger.info('brightness => ', brightness);
+      console.log('brightness => ', brightness);
       my.led.brightness(brightness)
     });
   }
