@@ -10,7 +10,7 @@ Cylon.robot({
     // You can pass a callback to all blinkm functions as the last param,
     // If you do the command would be executed asynchronously.
     // For write operations you get an (err) param passed back,
-    // nucylondefined for success, and containing the error y any encountered.
+    // err is undefined when success, and contains the error if any encountered.
     //
     // Write BlimkM commands.
     my.pixel.goToRGB(255, 0, 0);
@@ -28,7 +28,7 @@ Cylon.robot({
     // you get a regular return.
     var color = my.pixel.getRGBColor();
 
-    if (typeof err === "undefined" || err === null) { console.log(color); }
+    console.log(color);
 
     // Example getting the color using async call and a callback
     my.pixel.getRGBColor(function(err, data) {
