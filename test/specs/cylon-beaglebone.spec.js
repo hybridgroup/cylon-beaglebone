@@ -1,13 +1,24 @@
 'use strict';
 
-var beaglebone = source("cylon-beaglebone");
+var module = source("cylon-beaglebone"),
+    Beaglebone = source('beaglebone');
 
 describe("Cylon.Beaglebone", function() {
-  it("should be able to register", function() {
-    beaglebone.register.should.be.a('function');
+  describe("#adaptors", function() {
+    it('is an array of supplied adaptors', function() {
+      expect(module.adaptors).to.be.eql(['beaglebone']);
+    });
   });
 
-  it("should be able to create adaptor", function() {
-    expect(beaglebone.adaptor()).to.be.a('object');
+  describe("#dependencies", function() {
+    it('is an array of required modules', function() {
+      expect(module.drivers).to.be.eql(['cylon-gpio', 'cylon-i2c']);
+    });
+  });
+
+  describe("#adaptor", function() {
+    it('returns a new Beaglebone adaptor instance', function() {
+      expect(module.adaptor({})).to.be.an.instanceOf(Beaglebone);
+    });
   });
 });
