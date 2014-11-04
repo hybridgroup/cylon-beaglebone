@@ -12,7 +12,7 @@ describe("Cylon.Beaglebone", function() {
 
   describe("#dependencies", function() {
     it('is an array of required modules', function() {
-      expect(module.drivers).to.be.eql(['cylon-gpio', 'cylon-i2c']);
+      expect(module.dependencies).to.be.eql(['cylon-gpio', 'cylon-i2c']);
     });
   });
 
