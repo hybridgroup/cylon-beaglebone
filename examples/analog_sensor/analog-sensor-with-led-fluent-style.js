@@ -2,10 +2,10 @@ var cylon = require('cylon');
 
 cylon.robot({
   connection: { name: 'beaglbone', adaptor: 'beaglebone' },
-  devices: [
-    { name: 'sensor', driver: 'analogSensor', pin: "P9_33" },
-    { name: 'led', driver: 'led', pin: "P9_14" },
-  ]
+  devices: {
+    sensor: { driver: 'analogSensor', pin: "P9_33" },
+    led: { driver: 'led', pin: "P9_14" },
+  }
 })
 
 .on('ready', function(robot) {
