@@ -10,8 +10,13 @@ Now that we have Cylon imported, we can start defining our robot
 
 Let's define the connections and devices:
 
-      connection: { name: 'beaglebone', adaptor: 'beaglebone' },
-      device: { name: 'led', driver: 'led', pin: 'P9_14' },
+      connections: {
+        beaglebone: { adaptor: 'beaglebone' }
+      },
+
+      devices: {
+        led: { driver: 'led', pin: 'P9_14' }
+      },
 
 Now that Cylon knows about the necessary hardware we're going to be using, we'll
 tell it what work we want to do:

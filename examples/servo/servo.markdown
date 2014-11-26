@@ -10,17 +10,21 @@ Now that we have Cylon imported, we can start defining our robot
 
 Let's define the connections and devices:
 
-      connection: { name: 'beaglebone', adaptor: 'beaglebone' },
-      device: {
-         name: 'servo',
-         driver: 'servo',
-         pin: 'P9_14',
-         freq: 50,
-         // pulseWidth in MicroSeconds as per servo spec sheet
-         // e.g. http://www.servodatabase.com/servo/towerpro/sg90
-         pulseWidth: { min: 500, max: 2400 },
-         limits: { bottom: 20, top: 160 }
-       },
+      connections: {
+        beaglebone: { adaptor: 'beaglebone' }
+      },
+
+      devices: {
+        servo: {
+          driver: 'servo',
+          pin: 'P9_14',
+          freq: 50,
+          // pulseWidth in MicroSeconds as per servo spec sheet
+          // e.g. http://www.servodatabase.com/servo/towerpro/sg90
+          pulseWidth: { min: 500, max: 2400 },
+          limits: { bottom: 20, top: 160 }
+        }
+      },
 
 Now that Cylon knows about the necessary hardware we're going to be using, we'll
 tell it what work we want to do

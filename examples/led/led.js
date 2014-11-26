@@ -1,8 +1,13 @@
 var Cylon = require('cylon');
 
 Cylon.robot({
-  connection: { name: 'beaglebone', adaptor: 'beaglebone' },
-  device: { name: 'led', driver: 'led', pin: 'P9_14' },
+  connections: {
+    beaglebone: { adaptor: 'beaglebone' }
+  },
+
+  devices: {
+    led: { driver: 'led', pin: 'P9_14' }
+  },
 
   work: function(my) {
     var brightness = 0,

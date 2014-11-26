@@ -20,7 +20,10 @@ var Cylon = require('cylon');
 
 // Initialize the robot
 Cylon.robot({
-  connection: { name: 'beaglebone', adaptor: 'beaglebone' },
+  connections: {
+    beaglebone: { adaptor: 'beaglebone' }
+  },
+
   devices: {
     led: { driver: 'led', pin: 'P9_12' },
     button: { driver: 'button', pin: 'P9_14' }

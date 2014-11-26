@@ -1,8 +1,13 @@
 var Cylon = require('cylon');
 
 Cylon.robot({
-  connection: { name: 'beaglebone', adaptor: 'beaglebone' },
-  device: { name: 'pixel', driver: 'blinkm', pin: 'P9_20' },
+  connections: {
+    beaglebone: { adaptor: 'beaglebone' }
+  },
+
+  devices: {
+    pixel: { driver: 'blinkm', pin: 'P9_20' }
+  },
 
   work: function(my) {
     my.pixel.stopScript();
