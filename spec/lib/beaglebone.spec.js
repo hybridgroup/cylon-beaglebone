@@ -128,10 +128,14 @@ describe('Cylon.Adaptors.Beaglebone', function() {
       beaglebone._analogPin.restore();
     });
 
+    it("calls _analogPin to return an AnalogPin object", function() {
+      expect(beaglebone._analogPin).to.be.calledWith('P9_39');
+      expect(beaglebone._analogPin).returned(analogPin);
+    });
+
     it("triggers the callback", function() {
       expect(callback).to.be.calledWith(null, 128);
     });
-
 
     it("emits the analogRead event", function() {
       expect(beaglebone.emit).to.be.calledWith('analogRead', 128);
@@ -141,8 +145,119 @@ describe('Cylon.Adaptors.Beaglebone', function() {
       expect(analogPin.connect).to.be.calledOnce;
     });
 
-    it("calls analogPin.connect", function() {
+    it("calls analogPin.analogRead", function() {
       expect(analogPin.analogRead).to.be.calledOnce;
+    });
+  });
+
+  describe("#digitalRead", function() {
+    var callback, digitalPin;
+
+    beforeEach(function() {
+      digitalPin = {
+        on: stub(),
+        digitalRead: spy(),
+        connect: spy()
+      };
+
+      callback = spy();
+
+      stub(beaglebone, '_digitalPin').returns(digitalPin);
+      stub(beaglebone, 'emit');
+
+      digitalPin.on.yields(1);
+
+      beaglebone.digitalRead('P8_3', callback);
+    });
+
+    afterEach(function() {
+      beaglebone.emit.restore();
+      beaglebone._digitalPin.restore();
+    });
+
+    it("calls _digitalPin to return a DigitalPin object", function() {
+      expect(beaglebone._digitalPin).to.be.calledWith('P8_3', 'r');
+      expect(beaglebone._digitalPin).returned(digitalPin);
+    });
+
+    it("triggers the callback", function() {
+      expect(callback).to.be.calledWith(null, 1);
+    });
+
+
+    it("emits the digitalRead event", function() {
+      expect(beaglebone.emit).to.be.calledWith('digitalRead', 1);
+    });
+
+    it("calls digitalPin.connect", function() {
+      expect(digitalPin.connect).to.be.calledOnce;
+    });
+
+    it("calls digitalPin.digitalRead", function() {
+      expect(digitalPin.digitalRead).to.be.calledOnce;
+    });
+  });
+
+  describe("#digitalWrite", function() {
+    var digitalPin;
+
+    beforeEach(function() {
+      digitalPin = {
+        on: stub(),
+        digitalWrite: spy(),
+        connect: spy()
+      };
+
+      stub(beaglebone, '_translatePin').returns(38);
+      stub(beaglebone, '_digitalPin').returns(digitalPin);
+      stub(beaglebone, 'emit');
+
+      digitalPin.on.yields(1);
+
+      beaglebone.digitalWrite('P8_3', 1);
+    });
+
+    afterEach(function() {
+      beaglebone._translatePin.restore();
+      beaglebone._digitalPin.restore();
+      beaglebone.emit.restore();
+    });
+
+    it("calls _digitalPin to return a DigitalPin object", function() {
+      expect(beaglebone._digitalPin).to.be.calledWith('P8_3', 'w');
+      expect(beaglebone._digitalPin).returned(digitalPin);
+    });
+
+    it("emits the digitalWrite event", function() {
+      expect(beaglebone.emit).to.be.calledWith('digitalWrite', 1);
+    });
+
+    it("calls digitalPin.connect", function() {
+      expect(digitalPin.connect).to.be.calledOnce;
+    });
+
+    it("calls digitalPin.digitalWrite", function() {
+      expect(digitalPin.digitalWrite).to.be.calledOnce;
+    });
+
+    describe('if digitalPin already exists', function() {
+      beforeEach(function() {
+        digitalPin.digitalWrite.reset();
+        beaglebone._digitalPin.reset();
+
+        beaglebone.pins[38] = digitalPin;
+
+        beaglebone.digitalWrite('P8_3', 1);
+      });
+
+      it("calls digitalWrite", function() {
+        expect(digitalPin.digitalWrite).to.be.calledOnce;
+      });
+
+      it("calls does not call beaglebone._digitalPin", function() {
+        beaglebone.digitalWrite('P8_3', 1);
+        expect(beaglebone._digitalPin).to.not.be.called;
+      });
     });
   });
 });
