@@ -441,22 +441,22 @@ describe('Cylon.Adaptors.Beaglebone', function() {
         interface: '/dev/i2c-1'
       };
 
-      stub(beaglebone, '_i2c').returns(i2cDevice);
+      stub(beaglebone, '_newI2CDevice').returns(i2cDevice);
 
       beaglebone._i2cDevice(0x09);
     });
 
     afterEach(function() {
-      beaglebone._i2c.restore();
+      beaglebone._newI2CDevice.restore();
     });
 
-    it("calls this._i2c with address", function() {
-      expect(beaglebone._i2c).to.be.calledOnce;
-      expect(beaglebone._i2c).to.be.calledWith(0x09);
+    it("calls this._newI2CDevice with address", function() {
+      expect(beaglebone._newI2CDevice).to.be.calledOnce;
+      expect(beaglebone._newI2CDevice).to.be.calledWith(0x09);
     });
 
     it("returns an i2cDevice instance", function() {
-      expect(beaglebone._i2c).returned(i2cDevice);
+      expect(beaglebone._newI2CDevice).returned(i2cDevice);
     });
 
     it("sets this.i2cDevices[address] to the returned device", function() {
@@ -465,8 +465,180 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
     describe('when i2cDevice exists in this.i2cDevices array', function() {
       it("does not call this._i2c", function() {
-        expect(beaglebone._i2c).to.be.calledOnce;
+        expect(beaglebone._newI2CDevice).to.be.calledOnce;
       });
+    });
+  });
+
+  describe("#_pwmPin", function() {
+    var pwmPin;
+
+    beforeEach(function() {
+      pwmPin = {
+        pin: 38,
+        period: 500000
+      };
+
+      stub(beaglebone, '_newPwmPin').returns(pwmPin);
+
+      beaglebone._pwmPin('P9_14', 500000);
+    });
+
+    afterEach(function() {
+      beaglebone._newPwmPin.restore();
+    });
+
+    it("calls this._newPwmPin with params", function() {
+      expect(beaglebone._newPwmPin).to.be.calledOnce;
+      expect(beaglebone._newPwmPin).to.be.calledWith('P9_14', 500000);
+    });
+
+    it("returns a pwmPin instance", function() {
+      expect(beaglebone._newPwmPin).returned(pwmPin);
+    });
+
+    it("sets this.pwmPin[gpioPinNum] to the returned device", function() {
+      expect(beaglebone.pwmPins['P9_14']).to.be.eql(pwmPin);
+    });
+
+    describe('when pwmPin exists in this.pwmPins array', function() {
+      it("does not call this._newPwmPin", function() {
+        expect(beaglebone._newPwmPin).to.be.calledOnce;
+      });
+    });
+  });
+
+  describe("#_analogPin", function() {
+    var analogPin;
+
+    beforeEach(function() {
+      analogPin = {
+        pinNum: 'P9_39',
+        pin: 'AIN0',
+      };
+
+      stub(beaglebone, '_newAnalogPin').returns(analogPin);
+
+      beaglebone._analogPin('P9_39');
+    });
+
+    afterEach(function() {
+      beaglebone._newAnalogPin.restore();
+    });
+
+    it("calls this._newAnalogPin with params", function() {
+      expect(beaglebone._newAnalogPin).to.be.calledOnce;
+      expect(beaglebone._newAnalogPin).to.be.calledWith('AIN0');
+    });
+
+    it("returns an analogPin instance", function() {
+      expect(beaglebone._newAnalogPin).returned(analogPin);
+    });
+
+    it("sets this.analogPins[gpioPinNum] to the returned analogPin", function() {
+      expect(beaglebone.analogPins['AIN0']).to.be.eql(analogPin);
+    });
+
+    describe('when analogPin exists in this.analogPins array', function() {
+      it("does not call this._newAnalogPin", function() {
+        expect(beaglebone._newAnalogPin).to.be.calledOnce;
+      });
+    });
+  });
+
+  describe("#_digitalPin", function() {
+    var digitalPin;
+
+    beforeEach(function() {
+      digitalPin = {
+        gpioPinNum: 38,
+        pinNum: 'P8_3'
+      };
+
+      stub(beaglebone, '_newDigitalPin').returns(digitalPin);
+
+      beaglebone._digitalPin('P8_3', 'w');
+    });
+
+    afterEach(function() {
+      beaglebone._newDigitalPin.restore();
+    });
+
+    it("calls this._newDigitalPin with params", function() {
+      expect(beaglebone._newDigitalPin).to.be.calledOnce;
+      expect(beaglebone._newDigitalPin).to.be.calledWith(38, 'w');
+    });
+
+    it("returns a digitalPin instance", function() {
+      expect(beaglebone._newDigitalPin).returned(digitalPin);
+    });
+
+    it("sets this.pins[gpioPinNum] to the returned digitalPin", function() {
+      expect(beaglebone.pins[38]).to.be.eql(digitalPin);
+    });
+
+    describe('when digitalPin exists in this.pins array', function() {
+      it("does not call this._newDigitalPin", function() {
+        expect(beaglebone._newDigitalPin).to.be.calledOnce;
+      });
+    });
+  });
+
+  describe('translate functions', function() {
+    var digitalPinNum, analogPinNum, pwmPinNum;
+
+    beforeEach(function() {
+      spy(beaglebone, '_translatePin');
+      spy(beaglebone, '_translatePwmPin');
+      spy(beaglebone, '_translateAnalogPin');
+
+      digitalPinNum = beaglebone._translatePin('P8_3');
+      pwmPinNum = beaglebone._translatePwmPin('P9_14');
+      analogPinNum = beaglebone._translateAnalogPin('P9_39');
+    });
+
+    afterEach(function() {
+      beaglebone._translatePin.restore();
+      beaglebone._translatePwmPin.restore();
+      beaglebone._translateAnalogPin.restore();
+    });
+    it('#_translatePin', function() {
+      expect(beaglebone._translatePin).returned(38);
+    });
+
+    it('#_translatePwmPin', function() {
+      expect(beaglebone._translatePwmPin).returned('P9_14');
+    });
+
+    it('#_translateAnalogPin', function() {
+      expect(beaglebone._translateAnalogPin).returned('AIN0');
+    });
+  });
+
+  describe('#_disconnectPins', function() {
+    var pin, pwmPin;
+
+    beforeEach(function() {
+      pin = {
+        closeSync: stub()
+      };
+
+      pwmPin = {
+        closeSync: stub()
+      };
+
+      beaglebone.pins[38] = pin;
+      beaglebone.pwmPins['P9_14'] = pwmPin;
+
+      beaglebone._disconnectPins();
+    });
+
+    it('calls pin.closeSync for digitalPins', function() {
+      expect(pin.closeSync).to.be.calledOnce;
+    });
+
+    it('calls pin.closeSync for digitalPins', function() {
+      expect(pwmPin.closeSync).to.be.calledOnce;
     });
   });
 });
