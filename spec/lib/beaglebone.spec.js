@@ -2,6 +2,8 @@
 
 var Beaglebone = source('beaglebone');
 
+var cylon = require('cylon');
+
 describe('Cylon.Adaptors.Beaglebone', function() {
   var beaglebone;
 
@@ -255,8 +257,215 @@ describe('Cylon.Adaptors.Beaglebone', function() {
       });
 
       it("calls does not call beaglebone._digitalPin", function() {
-        beaglebone.digitalWrite('P8_3', 1);
         expect(beaglebone._digitalPin).to.not.be.called;
+      });
+    });
+  });
+
+  describe("#_pwmWrite", function() {
+    var pwmPin;
+
+    beforeEach(function() {
+      pwmPin = {
+        on: stub(),
+        pwmWrite: spy(),
+        connect: spy(),
+        connected: false
+      };
+
+      stub(beaglebone, '_pwmPin').returns(pwmPin);
+      stub(beaglebone, 'emit');
+
+      pwmPin.on.yields();
+
+      beaglebone._pwmWrite('P9_14', 500000, 0.5, 'pwm');
+    });
+
+    afterEach(function() {
+      beaglebone._pwmPin.restore();
+      beaglebone.emit.restore();
+    });
+
+    it("calls _pwmPin to return a pwmPin object", function() {
+      expect(beaglebone._pwmPin).to.be.calledWith('P9_14', 500000);
+      expect(beaglebone._pwmPin).returned(pwmPin);
+    });
+
+    it("emits the pwmWrite event", function() {
+      expect(beaglebone.emit).to.be.calledWith('pwmWrite');
+    });
+
+    it("calls pwmPin.connect", function() {
+      expect(pwmPin.connect).to.be.calledOnce;
+    });
+
+    it("calls pwmPin.pwmWrite", function() {
+      expect(pwmPin.pwmWrite).to.be.calledOnce;
+    });
+
+    it("registers a pwmPin listener for connect event", function() {
+      expect(pwmPin.on).to.be.calledWith('connect');
+    });
+
+    it("registers a pwmPin listener for pwmWrite event", function() {
+      expect(pwmPin.on).to.be.calledWith('connect');
+    });
+
+    describe('if pwmPin already exists', function() {
+      beforeEach(function() {
+        pwmPin.pwmWrite.reset();
+        pwmPin.connect.reset();
+        pwmPin.on.reset();
+
+        pwmPin.connected = true;
+
+        beaglebone._pwmWrite('P9_14', 500000, 0.5, 'pwm');
+      });
+
+      it("calls pwmPin.pwmWrite", function() {
+        expect(pwmPin.pwmWrite).to.be.calledOnce;
+      });
+
+      it("do not call pwmPin.connect", function() {
+        expect(pwmPin.connect).to.not.be.called;
+      });
+
+      it("do not add a new pwmWrite listener", function() {
+        expect(pwmPin.on).to.not.be.called;
+      });
+    });
+  });
+
+  describe("#pwmWrite", function() {
+    var pwm;
+
+    beforeEach(function() {
+      pwm = {
+        duty: 250000,
+        period: 500000
+      };
+
+      stub(cylon.IO.Utils, 'periodAndDuty').returns(pwm);
+      stub(beaglebone, '_pwmWrite');
+
+      beaglebone.pwmWrite('P9_14', 0.5, 2000, 50,'pwm');
+    });
+
+    afterEach(function() {
+      beaglebone._pwmWrite.restore();
+      cylon.IO.Utils.periodAndDuty.restore();
+    });
+
+    it("calls cylon.IO.Utils.periodAndDuty", function() {
+      expect(cylon.IO.Utils.periodAndDuty).to.be.calledWith(0.5, 2000);
+      expect(cylon.IO.Utils.periodAndDuty).returned(pwm);
+    });
+
+    it("calls this._pwmWrite with params", function() {
+      expect(beaglebone._pwmWrite).to.be.calledWith('P9_14', 500000, 250000, 'pwm');
+    });
+  });
+
+  describe("#servoWrite", function() {
+    beforeEach(function() {
+      stub(beaglebone, 'pwmWrite');
+
+      beaglebone.servoWrite('P9_14', 0.5, 50, 50);
+    });
+
+    afterEach(function() {
+      beaglebone.pwmWrite.restore();
+    });
+
+    it("calls this.pwmWrite with params", function() {
+      expect(beaglebone.pwmWrite).to.be.calledWith('P9_14', 0.5, 50, 50, 'servo');
+    });
+  });
+
+  describe("#i2cWrite", function() {
+    var callback, i2cDevice;
+
+    beforeEach(function() {
+      callback = spy();
+
+      i2cDevice = {
+        write: spy()
+      };
+
+      stub(beaglebone, '_i2cDevice').returns(i2cDevice);
+
+      beaglebone.i2cWrite(0x09, 0xfe, [0x00, 0xff, 0xff], callback);
+    });
+
+    afterEach(function() {
+      beaglebone._i2cDevice.restore();
+    });
+
+    it("calls i2cDevice.write with params", function() {
+      expect(i2cDevice.write).to.be.calledOnce;
+      expect(i2cDevice.write).to.be.calledWith(0xfe, [0x00, 0xff, 0xff], callback);
+    });
+  });
+
+  describe("#i2cRead", function() {
+    var callback, i2cDevice;
+
+    beforeEach(function() {
+      callback = spy();
+
+      i2cDevice = {
+        read: spy()
+      };
+
+      stub(beaglebone, '_i2cDevice').returns(i2cDevice);
+
+      beaglebone.i2cRead(0x09, 0xfe, 3, callback);
+    });
+
+    afterEach(function() {
+      beaglebone._i2cDevice.restore();
+    });
+
+    it("calls i2cDevice.write with params", function() {
+      expect(i2cDevice.read).to.be.calledOnce;
+      expect(i2cDevice.read).to.be.calledWith(0xfe, 3, callback);
+    });
+  });
+
+  describe("#_i2cDevice", function() {
+    var i2cDevice;
+
+    beforeEach(function() {
+      i2cDevice = {
+        address: 0x09,
+        interface: '/dev/i2c-1'
+      };
+
+      stub(beaglebone, '_i2c').returns(i2cDevice);
+
+      beaglebone._i2cDevice(0x09);
+    });
+
+    afterEach(function() {
+      beaglebone._i2c.restore();
+    });
+
+    it("calls this._i2c with address", function() {
+      expect(beaglebone._i2c).to.be.calledOnce;
+      expect(beaglebone._i2c).to.be.calledWith(0x09);
+    });
+
+    it("returns an i2cDevice instance", function() {
+      expect(beaglebone._i2c).returned(i2cDevice);
+    });
+
+    it("sets this.i2cDevices[address] to the returned device", function() {
+      expect(beaglebone.i2cDevices[0x09]).to.be.eql(i2cDevice);
+    });
+
+    describe('when i2cDevice exists in this.i2cDevices array', function() {
+      it("does not call this._i2c", function() {
+        expect(beaglebone._i2c).to.be.calledOnce;
       });
     });
   });
