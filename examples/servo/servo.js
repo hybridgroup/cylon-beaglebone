@@ -1,14 +1,16 @@
-var Cylon = require('cylon');
+"use strict";
+
+var Cylon = require("cylon");
 
 Cylon.robot({
   connections: {
-    beaglebone: { adaptor: 'beaglebone' }
+    beaglebone: { adaptor: "beaglebone" }
   },
 
   devices: {
     servo: {
-      driver: 'servo',
-      pin: 'P9_14',
+      driver: "servo",
+      pin: "P9_14",
       freq: 50,
       // pulseWidth in MicroSeconds as per servo spec sheet
       // e.g. http://www.servodatabase.com/servo/towerpro/sg90

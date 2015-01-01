@@ -1,11 +1,13 @@
-var Cylon = require('cylon');
+"use strict";
+
+var Cylon = require("cylon");
 
 Cylon
   .robot()
-  .connection('beaglebone', { adaptor: 'beaglebone' })
-  .device('servo', {
-    driver: 'servo',
-    pin: 'P9_14',
+  .connection("beaglebone", { adaptor: "beaglebone" })
+  .device("servo", {
+    driver: "servo",
+    pin: "P9_14",
     freq: 50,
     // pulseWidth in MicroSeconds as per servo spec sheet
     // e.g. http://www.servodatabase.com/servo/towerpro/sg90
@@ -13,7 +15,7 @@ Cylon
     limits: { bottom: 20, top: 160 }
   })
 
-  .on('ready', function(bot) {
+  .on("ready", function(bot) {
     // Be carefull with your servo angles or you might DAMAGE the servo!
     // Cylon uses a 50hz/s (20ms period) frequency and a Duty Cycle
     // of 0.500 microseconds to 2400 microseconds to control the servo
