@@ -117,7 +117,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       callback = spy();
 
-      stub(beaglebone, '_analogPin').returns(analogPin);
+      stub(beaglebone, '_muxPin').returns(analogPin);
       stub(beaglebone, 'emit');
 
       analogPin.on.yields(128);
@@ -127,12 +127,12 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
     afterEach(function() {
       beaglebone.emit.restore();
-      beaglebone._analogPin.restore();
+      beaglebone._muxPin.restore();
     });
 
-    it("calls _analogPin to return an AnalogPin object", function() {
-      expect(beaglebone._analogPin).to.be.calledWith('P9_39');
-      expect(beaglebone._analogPin).returned(analogPin);
+    it("calls _muxPin to return an AnalogPin object", function() {
+      expect(beaglebone._muxPin).to.be.calledWith('analog', { pinNum: 'P9_39' });
+      expect(beaglebone._muxPin).returned(analogPin);
     });
 
     it("triggers the callback", function() {
@@ -164,7 +164,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       callback = spy();
 
-      stub(beaglebone, '_digitalPin').returns(digitalPin);
+      stub(beaglebone, '_muxPin').returns(digitalPin);
       stub(beaglebone, 'emit');
 
       digitalPin.on.yields(1);
@@ -174,12 +174,12 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
     afterEach(function() {
       beaglebone.emit.restore();
-      beaglebone._digitalPin.restore();
+      beaglebone._muxPin.restore();
     });
 
     it("calls _digitalPin to return a DigitalPin object", function() {
-      expect(beaglebone._digitalPin).to.be.calledWith('P8_3', 'r');
-      expect(beaglebone._digitalPin).returned(digitalPin);
+      expect(beaglebone._muxPin).to.be.calledWith('digital', { pinNum: 'P8_3', mode: 'r' });
+      expect(beaglebone._muxPin).returned(digitalPin);
     });
 
     it("triggers the callback", function() {
@@ -211,7 +211,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
       };
 
       stub(beaglebone, '_translatePin').returns(38);
-      stub(beaglebone, '_digitalPin').returns(digitalPin);
+      stub(beaglebone, '_muxPin').returns(digitalPin);
       stub(beaglebone, 'emit');
 
       digitalPin.on.yields(1);
@@ -221,13 +221,13 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
     afterEach(function() {
       beaglebone._translatePin.restore();
-      beaglebone._digitalPin.restore();
+      beaglebone._muxPin.restore();
       beaglebone.emit.restore();
     });
 
     it("calls _digitalPin to return a DigitalPin object", function() {
-      expect(beaglebone._digitalPin).to.be.calledWith('P8_3', 'w');
-      expect(beaglebone._digitalPin).returned(digitalPin);
+      expect(beaglebone._muxPin).to.be.calledWith('digital', { pinNum: 'P8_3', mode: 'w' });
+      expect(beaglebone._muxPin).returned(digitalPin);
     });
 
     it("emits the digitalWrite event", function() {
@@ -245,7 +245,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
     describe('if digitalPin already exists', function() {
       beforeEach(function() {
         digitalPin.digitalWrite.reset();
-        beaglebone._digitalPin.reset();
+        beaglebone._muxPin.reset();
 
         beaglebone.pins[38] = digitalPin;
 
@@ -257,7 +257,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
       });
 
       it("calls does not call beaglebone._digitalPin", function() {
-        expect(beaglebone._digitalPin).to.not.be.called;
+        expect(beaglebone._muxPin).to.not.be.called;
       });
     });
   });
@@ -273,7 +273,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
         connected: false
       };
 
-      stub(beaglebone, '_pwmPin').returns(pwmPin);
+      stub(beaglebone, '_muxPin').returns(pwmPin);
       stub(beaglebone, 'emit');
 
       pwmPin.on.yields();
@@ -282,13 +282,13 @@ describe('Cylon.Adaptors.Beaglebone', function() {
     });
 
     afterEach(function() {
-      beaglebone._pwmPin.restore();
+      beaglebone._muxPin.restore();
       beaglebone.emit.restore();
     });
 
-    it("calls _pwmPin to return a pwmPin object", function() {
-      expect(beaglebone._pwmPin).to.be.calledWith('P9_14', 500000);
-      expect(beaglebone._pwmPin).returned(pwmPin);
+    it("calls _muxPin to return a pwmPin object", function() {
+      expect(beaglebone._muxPin).to.be.calledWith('pwm', { pinNum: 'P9_14', period: 500000 });
+      expect(beaglebone._muxPin).returned(pwmPin);
     });
 
     it("emits the pwmWrite event", function() {
@@ -392,13 +392,13 @@ describe('Cylon.Adaptors.Beaglebone', function() {
         write: spy()
       };
 
-      stub(beaglebone, '_i2cDevice').returns(i2cDevice);
+      stub(beaglebone, '_muxPin').returns(i2cDevice);
 
       beaglebone.i2cWrite(0x09, 0xfe, [0x00, 0xff, 0xff], callback);
     });
 
     afterEach(function() {
-      beaglebone._i2cDevice.restore();
+      beaglebone._muxPin.restore();
     });
 
     it("calls i2cDevice.write with params", function() {
@@ -417,13 +417,18 @@ describe('Cylon.Adaptors.Beaglebone', function() {
         read: spy()
       };
 
-      stub(beaglebone, '_i2cDevice').returns(i2cDevice);
+      stub(beaglebone, '_muxPin').returns(i2cDevice);
 
       beaglebone.i2cRead(0x09, 0xfe, 3, callback);
     });
 
     afterEach(function() {
-      beaglebone._i2cDevice.restore();
+      beaglebone._muxPin.restore();
+    });
+
+    it("calls _muxPin to return a i2cDevice object", function() {
+      expect(beaglebone._muxPin).to.be.calledWith('i2c', { address: 0x09 });
+      expect(beaglebone._muxPin).returned(i2cDevice);
     });
 
     it("calls i2cDevice.write with params", function() {
@@ -443,7 +448,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       stub(beaglebone, '_newI2CDevice').returns(i2cDevice);
 
-      beaglebone._i2cDevice(0x09);
+      beaglebone._muxPin('i2c', { address: 0x09 });
     });
 
     afterEach(function() {
@@ -470,7 +475,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
     });
   });
 
-  describe("#_pwmPin", function() {
+  describe("#_muxPin for pwmPins", function() {
     var pwmPin;
 
     beforeEach(function() {
@@ -481,7 +486,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       stub(beaglebone, '_newPwmPin').returns(pwmPin);
 
-      beaglebone._pwmPin('P9_14', 500000);
+      beaglebone._muxPin('pwm', { pinNum: 'P9_14', period: 500000 });
     });
 
     afterEach(function() {
@@ -508,7 +513,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
     });
   });
 
-  describe("#_analogPin", function() {
+  describe("#_muxPin for analogPins", function() {
     var analogPin;
 
     beforeEach(function() {
@@ -519,7 +524,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       stub(beaglebone, '_newAnalogPin').returns(analogPin);
 
-      beaglebone._analogPin('P9_39');
+      beaglebone._muxPin('analog', { pinNum: 'P9_39' });
     });
 
     afterEach(function() {
@@ -546,7 +551,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
     });
   });
 
-  describe("#_digitalPin", function() {
+  describe("#_muxPin for digitalPins", function() {
     var digitalPin;
 
     beforeEach(function() {
@@ -557,7 +562,7 @@ describe('Cylon.Adaptors.Beaglebone', function() {
 
       stub(beaglebone, '_newDigitalPin').returns(digitalPin);
 
-      beaglebone._digitalPin('P8_3', 'w');
+      beaglebone._muxPin('digital', { pinNum: 'P8_3', mode: 'w' });
     });
 
     afterEach(function() {
