@@ -1,12 +1,14 @@
-var Cylon = require('cylon');
+"use strict";
+
+var Cylon = require("cylon");
 
 Cylon.robot({
   connections: {
-    beaglebone: { adaptor: 'beaglebone' }
+    beaglebone: { adaptor: "beaglebone" }
   },
 
   devices: {
-    led: { driver: 'led', pin: 'P9_12' }
+    led: { driver: "led", pin: "P9_12" }
   },
 
   work: function(my) {

@@ -1,10 +1,12 @@
-var Cylon = require('cylon');
+"use strict";
+
+var Cylon = require("cylon");
 
 Cylon
   .robot()
-  .connection('beaglebone', { adaptor: 'beaglebone' })
-  .device('pixel', { name: 'pixel', driver: 'blinkm', pin: 'P9_20' })
-  .on('ready', function(bot) {
+  .connection("beaglebone", { adaptor: "beaglebone" })
+  .device("pixel", { name: "pixel", driver: "blinkm", pin: "P9_20" })
+  .on("ready", function(bot) {
     bot.pixel.stopScript();
 
     // You can pass a callback to all blinkm functions as the last param,
