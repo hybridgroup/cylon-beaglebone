@@ -202,6 +202,8 @@ Thank you!
   * For git help see [progit](http://git-scm.com/book) which is an awesome (and free) book on git
 
 ## Release History
+Version 0.13.2 - Fixes issue with first run using a PWM pin
+
 Version 0.13.1 - Fixes issue with servo write
 
 Version 0.13.0 - Compatibility with Cylon 0.21.0
