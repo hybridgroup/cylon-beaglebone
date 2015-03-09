@@ -15,7 +15,7 @@ Want to use the Go programming language to power your robots? Check out our sist
 Installing Cylon.js for the BeagleBone Black is pretty easy, but must be done on the Beaglebone Black itself, or on another Linux computer.
 Due to I2C device support, the module cannot be installed on OS X or Windows.
 
-    $ npm install cylon-beaglebone
+    $ npm install cylon cylon-beaglebone
 
 ## How to Use
 
