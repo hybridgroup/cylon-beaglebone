@@ -1,9 +1,12 @@
 language: node_js
 node_js:
   - '0.10'
+  - '0.11'
+  - '0.12'
 before_install:
   - "mkdir -p ~/.npm"
 install:
+  - sudo apt-get install libi2c-dev
   - npm install
   - npm install git://github.com/hybridgroup/cylon.git
   - npm install -g istanbul codeclimate-test-reporter
