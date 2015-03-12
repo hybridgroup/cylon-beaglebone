@@ -1,15 +1,11 @@
 #!/bin/bash
 
-NODE_VERSION=$(node -v);
+node_version=$(node -v);
 
-echo "this is the node version ==> $NODE_VERSION"
+echo "Installing i2c module for node $node_version"
 
-if [[ $NODE_VERSION == *"v0.10."* ]]; then
-  echo "SAME!!!"
+if [[ $node_version == *"v0.10."* ]]; then
   npm install i2c@0.1.8
 else
-  echo "DIFFERENT!!!"
   npm install i2c
-
 fi
-
