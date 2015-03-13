@@ -203,6 +203,8 @@ Thank you!
 
 ## Release History
 
+Version 0.14.1 - Adaptor now accepts callbacks and passes back the pinNum in events
+
 Version 0.14.0 - Compatibility with Cylon 0.22.0
 
 Version 0.13.2 - Fixes issue with first run using a PWM pin
