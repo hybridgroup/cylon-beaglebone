@@ -142,7 +142,7 @@ describe("Cylon.Adaptors.Beaglebone", function() {
     });
 
     it("emits the analogRead event", function() {
-      expect(beaglebone.emit).to.be.calledWith("analogRead", 128);
+      expect(beaglebone.emit).to.be.calledWith("analogRead", 128, "P9_39");
     });
 
     it("calls analogPin.connect", function() {
@@ -191,7 +191,7 @@ describe("Cylon.Adaptors.Beaglebone", function() {
 
 
     it("emits the digitalRead event", function() {
-      expect(beaglebone.emit).to.be.calledWith("digitalRead", 1);
+      expect(beaglebone.emit).to.be.calledWith("digitalRead", 1, "P8_3");
     });
 
     it("calls digitalPin.connect", function() {
@@ -235,7 +235,7 @@ describe("Cylon.Adaptors.Beaglebone", function() {
     });
 
     it("emits the digitalWrite event", function() {
-      expect(beaglebone.emit).to.be.calledWith("digitalWrite", 1);
+      expect(beaglebone.emit).to.be.calledWith("digitalWrite", 1, "P8_3");
     });
 
     it("calls digitalPin.connect", function() {
