@@ -41,9 +41,13 @@ Cylon.robot({
 
 ## How to Connect
 
-You will likely want to connect your development machine to your BeagleBone Black while working on your code.
-You can do this easily, just by connecting to the BeagleBone Black over USB.
-Then, you can connect to the BBB using Network-Over-USB, and upload driver or configuration changes.
+You will likely want to connect your development machine to your BeagleBone Black while working on your code. You can do this easily, just by connecting to the BeagleBone Black over USB. Then, you can connect to the BBB using Network-Over-USB, and upload driver or configuration changes.
+
+### Important Note About Voltages
+
+The Beaglebone Black is a 3.3V device. You will need a logic level converter to work with 5V devices, such as this one from [SparkFun](https://www.sparkfun.com/products/12009) or this one from [Adafruit](http://www.adafruit.com/products/757).
+
+Furthermore, the Analog to Digital Converters (ADC) cannot handle more than 1.8V input, so keep this in mind when connecting to analog devices, or risk burning up your BBB.
 
 ### OS X
 
@@ -121,14 +125,20 @@ On most Linux distros, the `df -h` command should help you determine the name of
 ### Downloading the Linux Image, Flashing the SD Card
 
 The image we're using is the official modified Debian distro provided by BeagleBoard, so we'll download it directly from them:
-[http://debian.beagleboard.org/images/bone-debian-7.5-2014-05-14-2gb.img.xz](http://debian.beagleboard.org/images/bone-debian-7.5-2014-05-14-2gb.img.xz).
+[http://debian.beagleboard.org/images/bone-debian-7.8-lxde-4gb-armhf-2015-03-01-4gb.img.xz](http://debian.beagleboard.org/images/bone-debian-7.8-lxde-4gb-armhf-2015-03-01-4gb.img.xz).
 
-Once the image has downloaded, uncompress it with your favorite tool.
+Once the image has downloaded, uncompress it like this:
+
+    unxz bone-debian-7.8-lxde-4gb-armhf-2015-03-01-4gb.img.xz
 
 The final step is to flash the image onto the SD card.
-You can do so by running this command (be sure to update the `of` section to point to the SD card who's name you learned earlier!):
+You can do so by running this command (be sure to update the `of` section to point to the SD card name you found earlier!):
 
-    $ sudo dd bs=1M if=./bone-debian-7.5-2014-05-14-2gb.img of=/dev/sdb && sudo sync
+    $ sudo dd bs=1M if=./bone-debian-7.8-lxde-4gb-armhf-2015-03-01-4gb.img of=/dev/sdb && sudo sync
+
+## Booting Off Of The SD Card
+
+Insert SD card into your (powered-down) board, hold down the USER/BOOT button (if using Black) and apply power, either by the USB cable or 5V adapter.
 
 ## Configuring the BeagleBone Black
 
@@ -242,4 +252,4 @@ Version 0.2.0 - Release for cylon 0.8.0
 Version 0.1.0 - Initial release
 
 ## License
-Copyright (c) 2013-2014 The Hybrid Group. Licensed under the Apache 2.0 license.
+Copyright (c) 2013-2015 The Hybrid Group. Licensed under the Apache 2.0 license.
