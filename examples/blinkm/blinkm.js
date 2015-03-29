@@ -4,42 +4,30 @@ var Cylon = require("cylon");
 
 Cylon.robot({
   connections: {
-    beaglebone: { adaptor: "beaglebone" }
+    bbb: { adaptor: "beaglebone" }
   },
 
   devices: {
-    pixel: { driver: "blinkm", pin: "P9_20" }
+    blinkm: { driver: "blinkm" }
   },
 
   work: function(my) {
-    my.pixel.stopScript();
+    my.blinkm.stopScript();
 
-    // You can pass a callback to all blinkm functions as the last param,
-    // If you do the command would be executed asynchronously.
-    // For write operations you get an (err) param passed back,
-    // err is undefined when success, and contains the error if any encountered.
-    //
-    // Write BlimkM commands.
-    my.pixel.goToRGB(255, 0, 0);
-    my.pixel.fadeToRGB(0, 255, 0);
-    my.pixel.fadeToHSB(100, 180, 90);
-    my.pixel.fadeToRandomRGB(0, 0, 255);
-    my.pixel.fadeToRandomHSB(100, 180, 90);
-    my.pixel.playLightScript(1, 0, 0);
-    my.pixel.stopScript();
-    my.pixel.setFadeSpeed(50);
-    my.pixel.setTimeAdjust(50);
+    my.blinkm.getFirmware(function(err, version) {
+      console.log("Started BlinkM version " + version);
+    });
 
-    // For read commands you get (err, data) passed back to the callback,
-    // data contains the read data buffer, in case of Sync call (no callback)
-    // you get a regular return.
-    var color = my.pixel.getRGBColor();
+    my.blinkm.goToRGB(0,0,0);
+    my.blinkm.getRGBColor(function(err, data){
+      console.log("Starting Color: ", data);
+    });
 
-    console.log(color);
-
-    // Example getting the color using async call and a callback
-    my.pixel.getRGBColor(function(err, data) {
-      if (err == null) { console.log(data); }
+    every((2).seconds(), function() {
+      my.blinkm.getRGBColor(function(err, data){
+        console.log("Current Color: ", data);
+      });
+      my.blinkm.fadeToRandomRGB(128, 128, 128);
     });
   }
 }).start();
