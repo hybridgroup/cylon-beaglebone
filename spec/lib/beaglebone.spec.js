@@ -396,23 +396,37 @@ describe("Cylon.Adaptors.Beaglebone", function() {
       callback = spy();
 
       i2cDevice = {
-        write: spy()
+        write: stub()
       };
 
+      i2cDevice.write.yields();
+
       stub(beaglebone, "_muxPin").returns(i2cDevice);
+      spy(beaglebone, "respond");
 
       beaglebone.i2cWrite(0x09, 0xfe, [0x00, 0xff, 0xff], callback);
     });
 
     afterEach(function() {
       beaglebone._muxPin.restore();
+      beaglebone.respond.restore();
+    });
+
+    it("calls #respond with params", function() {
+      expect(beaglebone.respond)
+        .to.be
+        .calledWith("i2cWrite", callback, null, 0x09, 0xfe, [0x00, 0xff, 0xff]);
     });
 
     it("calls i2cDevice.write with params", function() {
       var fn = i2cDevice.write;
 
       expect(fn).to.be.calledOnce;
-      expect(fn).to.be.calledWith(0xfe, [0x00, 0xff, 0xff], callback);
+      expect(fn).to.be.calledWith(0xfe, [0x00, 0xff, 0xff]);
+    });
+
+    it("triggers callback", function() {
+      expect(callback).to.be.calledOnce;
     });
   });
 
@@ -423,27 +437,42 @@ describe("Cylon.Adaptors.Beaglebone", function() {
       callback = spy();
 
       i2cDevice = {
-        read: spy()
+        read: stub()
       };
 
+      i2cDevice.read.yields();
+
       stub(beaglebone, "_muxPin").returns(i2cDevice);
+      spy(beaglebone, "respond");
 
       beaglebone.i2cRead(0x09, 0xfe, 3, callback);
     });
 
     afterEach(function() {
       beaglebone._muxPin.restore();
+      beaglebone.respond.restore();
+    });
+
+    it("calls #respond with params", function() {
+      expect(beaglebone.respond)
+        .to.be
+        .calledWith("i2cRead", callback, null, 0x09, 0xfe, 3);
     });
 
     it("calls _muxPin to return a i2cDevice object", function() {
-      expect(beaglebone._muxPin).to.be.calledWith("i2c", 
-        { address: 0x09 });
+      expect(beaglebone._muxPin)
+        .to.be
+        .calledWith("i2c", { address: 0x09 });
       expect(beaglebone._muxPin).returned(i2cDevice);
     });
 
-    it("calls i2cDevice.write with params", function() {
+    it("calls i2cDevice.read with params", function() {
       expect(i2cDevice.read).to.be.calledOnce;
-      expect(i2cDevice.read).to.be.calledWith(0xfe, 3, callback);
+      expect(i2cDevice.read).to.be.calledWith(0xfe, 3);
+    });
+
+    it("triggers callback", function() {
+      expect(callback).to.be.calledOnce;
     });
   });
 
