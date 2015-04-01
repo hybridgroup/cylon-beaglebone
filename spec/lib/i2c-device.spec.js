@@ -6,6 +6,32 @@ var I2CDevice = source("i2c-device"),
 
 var EventEmitter = require("events").EventEmitter;
 
+function compareBuffers(a, b) {
+  if (!Buffer.isBuffer(a)) {
+    return undefined;
+  }
+
+  if (!Buffer.isBuffer(b)) {
+    return undefined;
+  }
+
+  if (typeof a.equals === "function") {
+    return a.equals(b);
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 describe("I2CDevice", function() {
   var device, wire;
 
@@ -42,12 +68,20 @@ describe("I2CDevice", function() {
 
     beforeEach(function() {
       callback = spy();
-      wire = device.i2cWire = { writeBytes: spy() };
+      wire = device.i2cWire = { write: spy() };
       device.write("command", [1, 2, 3], callback);
     });
 
     it("writes a set of bytes to the I2C connection", function() {
-      expect(wire.writeBytes).to.be.calledWith("command", [1, 2, 3], callback);
+      var call = wire.write.firstCall;
+
+      var bufsMatch = compareBuffers(
+        new Buffer(["command"].concat([1, 2, 3])),
+        call.args[0]
+      );
+
+      expect(bufsMatch).to.be.eql(true);
+      expect(call.args[1]).to.be.eql(callback);
     });
   });
 
@@ -56,12 +90,39 @@ describe("I2CDevice", function() {
 
     beforeEach(function() {
       callback = spy();
-      wire = device.i2cWire = { readBytes: spy() };
+      wire = device.i2cWire = { write: spy(), read: spy() };
       device.read("command", 1024, callback);
     });
 
-    it("reads a set of bytes from the I2C connection", function() {
-      expect(wire.readBytes).to.be.calledWith("command", 1024, callback);
+    it("writes a command to the I2C connection", function() {
+      var call = wire.write.firstCall;
+
+      var bufsMatch = compareBuffers(
+        new Buffer(["command"]),
+        call.args[0]
+      );
+
+      expect(bufsMatch).to.be.eql(true);
+    });
+
+    context("if the write fails", function() {
+      beforeEach(function() {
+        wire.write.yield("error!");
+      });
+
+      it("triggers the callback with an error", function() {
+        expect(callback).to.be.calledWith("error!", null);
+      });
+    });
+
+    context("if the write succeeds", function() {
+      beforeEach(function() {
+        wire.write.yield(null);
+      });
+
+      it("reads the specified data from the I2C device", function() {
+        expect(wire.read).to.be.calledWith(1024, callback);
+      });
     });
   });
 
