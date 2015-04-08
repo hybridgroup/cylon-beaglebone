@@ -213,6 +213,8 @@ Thank you!
 
 ## Release History
 
+Version 0.15.0 - Compatibility with Cylon 1.0.0
+
 Version 0.14.2 - Fixes implementation for i2c.
 
 Version 0.14.1 - Adaptor now accepts callbacks and passes back the pinNum in events
