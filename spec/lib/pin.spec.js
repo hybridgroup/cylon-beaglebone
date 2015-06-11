@@ -1,8 +1,6 @@
-// jshint expr:true
-
 "use strict";
 
-var Pin = source("pin");
+var Pin = lib("pin");
 
 var fs = require("fs"),
     EventEmitter = require("events").EventEmitter;

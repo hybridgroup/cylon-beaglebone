@@ -1,8 +1,7 @@
-/* jshint expr:true */
 "use strict";
 
-var mod = source("cylon-beaglebone"),
-    Beaglebone = source("beaglebone");
+var mod = lib("cylon-beaglebone"),
+    Beaglebone = lib("beaglebone");
 
 describe("Cylon.Beaglebone", function() {
   describe("#adaptors", function() {

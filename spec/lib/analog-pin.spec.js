@@ -1,11 +1,9 @@
-// jshint expr:true
-
 "use strict";
 
 var fs = require("fs");
 
-var AnalogPin = source("analog-pin"),
-    Pin = source("pin");
+var AnalogPin = lib("analog-pin"),
+    Pin = lib("pin");
 
 describe("AnalogPin", function() {
   var pin;
