@@ -1,6 +1,6 @@
 "use strict";
 
-var mod = lib("cylon-beaglebone"),
+var mod = lib("../"),
     Beaglebone = lib("beaglebone");
 
 describe("Cylon.Beaglebone", function() {
