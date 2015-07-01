@@ -1,5 +1,7 @@
 ## Release History
 
+Version 0.16.0 - Use Cylon 1.1.0
+
 Version 0.15.0 - Compatibility with Cylon 1.0.0
 
 Version 0.14.2 - Fixes implementation for i2c.
