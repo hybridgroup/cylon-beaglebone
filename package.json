@@ -28,10 +28,6 @@
     "beaglebone"
   ],
 
-  "scripts": {
-    "install": "./scripts/install-i2c.sh"
-  },
-
   "devDependencies": {
     "sinon-chai": "~2.4.0",
     "chai":       "~1.7.2",
@@ -41,6 +37,7 @@
   },
 
   "dependencies": {
+    "i2c-bus":    "latest",
     "cylon":      "~1.2.0",
     "cylon-gpio": "~0.27.0",
     "cylon-i2c":  "~0.23.0"
